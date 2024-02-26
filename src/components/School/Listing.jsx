@@ -163,9 +163,27 @@ import Logo from '../../images/logo.jpg';
 
 const SchoolListing = () => {
   const data = [
-    { Id: '1', Title: '1', SubTitle: '1', Image: Logo, Status: 'Avtive' },
-    { Id: '2', Title: '2', SubTitle: '2', Image: Logo, Status: 'Avtive' },
-    { Id: '3', Title: '3', SubTitle: '3', Image: Logo, Status: 'Avtive' },
+    {
+      Id: '1',
+      Title: 'school 1',
+      SubTitle: 'school 1',
+      Image: Logo,
+      Status: 'Avtive',
+    },
+    {
+      Id: '2',
+      Title: 'school 2',
+      SubTitle: 'school 2',
+      Image: Logo,
+      Status: 'Avtive',
+    },
+    {
+      Id: '3',
+      Title: 'school 3',
+      SubTitle: 'school 3',
+      Image: Logo,
+      Status: 'Avtive',
+    },
     // Add more sample data items as needed
   ];
 
