@@ -192,7 +192,9 @@ const SignIn = () => {
                 />
               </Link>
 
-              <p className="2xl:px-20 py-10 text-5xl">Virtual Filaments Main</p>
+              <p className="2xl:px-20 py-10 text-5xl">
+                Virtual Filaments Master
+              </p>
             </div>
           </div>
 
