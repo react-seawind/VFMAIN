@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Loader from '../../common/Loader/index';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
 
 // const SignIn = () => {
 //   const username = 'admin@sws.com';
@@ -133,10 +134,12 @@ const SignIn = () => {
   const [loginbutton, setloginbutton] = useState(false);
   const navigate = useNavigate();
 
+  const Email = 'admin@sws.com';
+  const Password = '123456';
   const formik = useFormik({
     initialValues: {
-      Email: 'admin@sws.com',
-      Password: '123456',
+      Email: '',
+      Password: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -153,13 +156,19 @@ const SignIn = () => {
       //   navigate('/');
       // }
 
-      sessionStorage.setItem('newLoginData', JSON.stringify(values));
-      const sessionget = sessionStorage.getItem('newLoginData');
-      if (sessionget) {
-        navigate('/dashboard');
-        window.location.reload();
+      if (values.Email === Email && values.Password === Password) {
+        sessionStorage.setItem('newLoginData', JSON.stringify(values));
+        const sessionget = sessionStorage.getItem('newLoginData');
+        if (sessionget) {
+          navigate('/dashboard');
+          window.location.reload();
+        } else {
+          navigate('/login');
+        }
       } else {
-        navigate('/login');
+        // Show error message
+        toast.error('Invalid email or password');
+        setloginbutton(false);
       }
     },
   });
