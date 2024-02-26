@@ -65,20 +65,21 @@ const PaymentListing = () => {
       name: 'Action',
       cell: (row) => (
         <div>
-          <button
-            className="bg-red-600 text-white p-3 px-5 flex"
-            onClick={() => {
-              setSelectedRow((prevRow) => (prevRow === row ? null : row));
-            }}
-          >
-            Actions
-            <FaChevronDown className=" my-auto mx-2" />
-          </button>
+          <div className="bg-red-600 text-white p-3 pl-5 flex relative">
+            <button>Actions</button>
+            <button
+              onClick={() => {
+                setSelectedRow((prevRow) => (prevRow === row ? null : row));
+              }}
+            >
+              <FaChevronDown className=" my-auto ml-4 " />
+            </button>
+          </div>
 
           {selectedRow && selectedRow.Id === row.Id && (
             <div className="action-buttons ml-3">
               <button
-                className=" text-black  bg-white border rounded p-2 w-25"
+                className=" text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   setSelectedRow(null);
                   Navigate('/payment/edit');
@@ -88,7 +89,7 @@ const PaymentListing = () => {
               </button>
               <br />
               <button
-                className=" text-black  bg-white border rounded p-2 w-25"
+                className=" text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   alert(`Deleting ${row.Title}`);
                   setSelectedRow(null);
