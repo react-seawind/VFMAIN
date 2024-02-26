@@ -78,7 +78,7 @@
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import Loader from './common/Loader';
+import Loader from './common/Loader/index';
 import routes from './routes/index.jsx';
 import RequireAuth from './Private/Requiredau';
 
