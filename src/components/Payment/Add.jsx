@@ -95,14 +95,6 @@ const PaymentAdd = () => {
                     </small>
                   )}
                 </div>
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Download Invoice
-                  </label>
-                  <button className="bg-blue-700 text-white py-2 w-full">
-                    Download
-                  </button>
-                </div>
               </div>
 
               <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
