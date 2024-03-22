@@ -53,7 +53,7 @@ const validationSchema = yup.object().shape({
   photo: yup.string().required('Photo is required'),
   idproof: yup.string().required('IdProof is required'),
   addressproof: yup.string().required('Address Proof is required'),
-  role: yup.string().required('Role is required'),
+
   password: yup.string().required('Password is required'),
   cpassword: yup
     .string()
@@ -85,7 +85,6 @@ const SchoolAdd = () => {
       photo: '',
       idproof: '',
       addressproof: '',
-      role: '',
       password: '',
       cpassword: '',
       Status: '',
@@ -487,29 +486,6 @@ const SchoolAdd = () => {
                   <p>Please select an a png,jpeg,jpg,gif file only.</p>
                 </div>
 
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Select Role
-                  </label>
-                  <div className="relative z-20 bg-white dark:bg-form-input">
-                    <select
-                      name="role"
-                      onChange={formik.handleChange}
-                      className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                    >
-                      <option>Select Role</option>
-                      <option value="school">School</option>
-                    </select>
-                    <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
-                      <BsChevronDown />
-                    </span>
-                    {formik.touched.role && formik.errors.role && (
-                      <small className="text-red-500">
-                        {formik.errors.role}
-                      </small>
-                    )}
-                  </div>
-                </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Password <span className="text-danger">*</span>

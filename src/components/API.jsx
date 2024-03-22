@@ -23,6 +23,7 @@ export const getServicedata = async () => {
 };
 
 // =========================BLOG=========================
+
 export const getBlog = async () => {
   try {
     const headers = {
