@@ -9,6 +9,7 @@ import { IoIosContact, IoMdAdd } from 'react-icons/io';
 import { TfiLayoutSliderAlt } from 'react-icons/tfi';
 import { FcAbout } from 'react-icons/fc';
 import {
+  FaBook,
   FaBookOpenReader,
   FaChevronDown,
   FaMoneyBill,
@@ -103,7 +104,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
       </div>
       {/* <!-- SIDEBAR HEADER --> */}
 
-      <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
+      <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear container">
         {/* <!-- Sidebar Menu --> */}
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
@@ -227,6 +228,246 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                               <li>
                                 <NavLink
                                   to="/payment/add"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <IoMdAdd />
+                                  Add
+                                </NavLink>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* ===============Payment Manager============== */}
+              <SidebarLinkGroup>
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <FaBook />
+                        Standard Manager
+                        <div
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                        >
+                          <FaChevronDown />
+                        </div>
+                      </NavLink>
+
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
+                              <li>
+                                <NavLink
+                                  to="/standard/listing"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <FaClipboardList />
+                                  Listing
+                                </NavLink>
+                              </li>
+                              <li>
+                                <NavLink
+                                  to="/standard/add"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <IoMdAdd />
+                                  Add
+                                </NavLink>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* ===============Subject Manager============== */}
+              <SidebarLinkGroup>
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <FaBook />
+                        Subject Manager
+                        <div
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                        >
+                          <FaChevronDown />
+                        </div>
+                      </NavLink>
+
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
+                              <li>
+                                <NavLink
+                                  to="/subject/listing"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <FaClipboardList />
+                                  Listing
+                                </NavLink>
+                              </li>
+                              <li>
+                                <NavLink
+                                  to="/subject/add"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <IoMdAdd />
+                                  Add
+                                </NavLink>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* ===============Chapter Manager============== */}
+              <SidebarLinkGroup>
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <FaBook />
+                        Chapter Manager
+                        <div
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                        >
+                          <FaChevronDown />
+                        </div>
+                      </NavLink>
+
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
+                              <li>
+                                <NavLink
+                                  to="/chapter/listing"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <FaClipboardList />
+                                  Listing
+                                </NavLink>
+                              </li>
+                              <li>
+                                <NavLink
+                                  to="/chapter/add"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <IoMdAdd />
+                                  Add
+                                </NavLink>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+              {/* ===============Topic Manager============== */}
+              <SidebarLinkGroup>
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <FaBook />
+                        Topic Manager
+                        <div
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                        >
+                          <FaChevronDown />
+                        </div>
+                      </NavLink>
+
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
+                              <li>
+                                <NavLink
+                                  to="/topic/listing"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <FaClipboardList />
+                                  Listing
+                                </NavLink>
+                              </li>
+                              <li>
+                                <NavLink
+                                  to="/topic/add"
                                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
                                 >
                                   <IoMdAdd />

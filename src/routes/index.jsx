@@ -13,6 +13,18 @@ import PaymentEdit from '../components/Payment/Edit';
 import Paymentreport from '../components/Datamanager/Paymentreport';
 import Schoolreport from '../components/Datamanager/Schoolreport';
 import MyQuillEditor from '../components/QuillEditor';
+import StandardListing from '../components/Standard/Listing';
+import StandardAdd from '../components/Standard/Add';
+import StandardEdit from '../components/Standard/Edit';
+import SubjectListing from '../components/Subject/Listing';
+import SubjectAdd from '../components/Subject/Add';
+import SubjectEdit from '../components/Subject/Edit';
+import ChapterListing from '../components/Chapter/Listing';
+import ChapterAdd from '../components/Chapter/Add';
+import ChapterEdit from '../components/Chapter/Edit';
+import TopicListing from '../components/Topic/Listing';
+import TopicAdd from '../components/Topic/Add';
+import TopicEdit from '../components/Topic/Edit';
 
 const coreRoutes = [
   {
@@ -75,6 +87,59 @@ const coreRoutes = [
   {
     path: '/new',
     component: MyQuillEditor,
+  },
+
+  // =================standard=============
+  {
+    path: '/standard/listing',
+    component: StandardListing,
+  },
+  {
+    path: '/standard/add',
+    component: StandardAdd,
+  },
+  {
+    path: '/standard/edit',
+    component: StandardEdit,
+  },
+  // =================subject=============
+  {
+    path: '/subject/listing',
+    component: SubjectListing,
+  },
+  {
+    path: '/subject/add',
+    component: SubjectAdd,
+  },
+  {
+    path: '/subject/edit',
+    component: SubjectEdit,
+  },
+  // =================chapter=============
+  {
+    path: '/chapter/listing',
+    component: ChapterListing,
+  },
+  {
+    path: '/chapter/add',
+    component: ChapterAdd,
+  },
+  {
+    path: '/chapter/edit',
+    component: ChapterEdit,
+  },
+  // =================topic=============
+  {
+    path: '/topic/listing',
+    component: TopicListing,
+  },
+  {
+    path: '/topic/add',
+    component: TopicAdd,
+  },
+  {
+    path: '/topic/edit',
+    component: TopicEdit,
   },
 ];
 
