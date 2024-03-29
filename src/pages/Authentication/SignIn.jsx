@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo.jpg';
 import Logo from '../../images/logo.jpg';
 import { FaEnvelope, FaKey } from 'react-icons/fa6';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
