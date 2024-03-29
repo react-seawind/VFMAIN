@@ -5,7 +5,8 @@ import * as yup from 'yup';
 import Logo from '../../images/logo.jpg';
 import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getPaymentById, updatePaymentById } from '../../API/PaymentAPI';
 
 const validationSchema = yup.object().shape({
   schoolname: yup
@@ -19,6 +20,35 @@ const validationSchema = yup.object().shape({
 });
 
 const PaymentEdit = () => {
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const PaymentData = await getPaymentById(Id);
+          formik.setValues({
+            Id: PaymentData.Id || '',
+            Title: PaymentData.Title || '',
+            Slug: PaymentData.Slug || '',
+            Content: PaymentData.Content || '',
+            Icon: PaymentData.Icon || '',
+            Hid_Icon: PaymentData.Hid_Icon || '',
+            Image: PaymentData.Image || '',
+            Hid_Image: PaymentData.Hid_Image || '',
+            Status: PaymentData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
   const formik = useFormik({
     initialValues: {
       schoolname: '',
@@ -26,15 +56,26 @@ const PaymentEdit = () => {
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('paymentEditData', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        const formData = new FormData();
+        formData.append('Id', Id);
+        formData.append('Title', values.Title);
+        formData.append('Slug', values.Slug);
+
+        formData.append('Status', values.Status);
+
+        await updatePaymentById(formData);
+      } catch (error) {
+        console.error('Error updating slider:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/payment/listing');
   };
   return (
     <div>
@@ -111,9 +152,9 @@ const PaymentEdit = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
-                    Paid
+                    Active
                   </div>
                   <div>
                     <input
@@ -122,12 +163,12 @@ const PaymentEdit = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
-                    UnPaid
+                    In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is unpaid.</p>
+                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">
@@ -139,8 +180,8 @@ const PaymentEdit = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

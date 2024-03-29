@@ -1,111 +1,145 @@
 import React from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { BsChevronDown } from 'react-icons/bs';
+import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { AddSchool } from '../../API/SchoolAPI';
 
-const validationSchema = yup.object().shape({
-  schoolname: yup
-    .string()
-    .matches(/^[A-Z a-z]+$/, 'Only alphabets are allowed for this field ')
+const validationSchema = Yup.object().shape({
+  SchoolName: Yup.string()
+    // .matches(/^[A-Za-z]+$/, 'Only alphabets are allowed for this field')
     .required('School Name is required'),
-  schoolemail: yup.string().email().required('School Email is required'),
-  schoolphone: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only Number are allowed for this field ')
-    .min(10, 'School Phone must be at most 10 characters')
+  SchoolEmail: Yup.string().email().required('School Email is required'),
+  SchoolPhone: Yup.string()
+    .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
+    .min(10, 'School Phone must be at least 10 characters')
     .max(10, 'School Phone must be at most 10 characters')
     .required('School Phone is required'),
-  username: yup
-    .string()
-    .matches(/^[A-Z a-z]+$/, 'Only alphabets are allowed for this field ')
+  UserName: Yup.string()
+    // .matches(/^[A-Za-z]+$/, 'Only alphabets are allowed for this field')
     .required('Name is required'),
-  useremail: yup.string().email().required('Email is required'),
-  userphone: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only Number are allowed for this field ')
-    .min(10, 'User Phone must be at most 10 characters')
+  UserEmail: Yup.string().email().required('Email is required'),
+  UserPhone: Yup.string()
+    .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
+    .min(10, 'User Phone must be at least 10 characters')
     .max(10, 'User Phone must be at most 10 characters')
     .required('Phone is required'),
-  country: yup.string().required('Country is required'),
-  state: yup.string().required('State is required'),
-  city: yup.string().required('City is required'),
-  area: yup.string().required('Area is required'),
-  pincode: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only numbres are allowed for this field ')
-    .max(6)
-    .min(6)
+  Country: Yup.string().required('Country is required'),
+  State: Yup.string().required('State is required'),
+  City: Yup.string().required('City is required'),
+  Area: Yup.string().required('Area is required'),
+  Pincode: Yup.string()
+    .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
+    .max(6, 'Pincode must be at most 6 characters')
+    .min(6, 'Pincode must be at least 6 characters')
     .required('Pincode is required'),
-  taddress: yup.string().required('Temporary/Current Address is required'),
-  paddress: yup.string().required('Permanent/Home Address is required'),
-  wnumber: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only Number are allowed for this field ')
-    .min(10, 'User Phone must be at most 10 characters')
-    .max(10, 'User Phone must be at most 10 characters')
+  Address: Yup.string().required('Temporary/Current Address is required'),
+  WhatsApp: Yup.string()
+    .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
+    .min(10, 'WhatsApp Number must be at least 10 characters')
+    .max(10, 'WhatsApp Number must be at most 10 characters')
     .required('WhatsApp Number is required'),
-  facebook: yup.string().required('Facebook is required'),
-  twitter: yup.string().required('Twitter is required'),
-  linkedIn: yup.string().required('LinkedIn is required'),
-  instagram: yup.string().required('Instagram is required'),
-  photo: yup.string().required('Photo is required'),
-  idproof: yup.string().required('IdProof is required'),
-  addressproof: yup.string().required('Address Proof is required'),
-
-  password: yup.string().required('Password is required'),
-  cpassword: yup
-    .string()
-    .required('Confirm Password is required')
-    .oneOf([yup.ref('password'), null], 'Passwords must match'),
+  Facebook: Yup.string().required('Facebook is required'),
+  Twitter: Yup.string().required('Twitter is required'),
+  LinkedIn: Yup.string().required('LinkedIn is required'),
+  Instagram: Yup.string().required('Instagram is required'),
+  Youtube: Yup.string().required('Youtube is required'),
+  Telegram: Yup.string().required('Telegram is required'),
+  Photo: Yup.string().required('Photo is required'),
+  AddressProof: Yup.string().required('AddressProof is required'),
+  IdProof: Yup.string().required('Id Proof is required'),
+  // Password: Yup.string().required('Password is required'),
 });
 const SchoolAdd = () => {
   const formik = useFormik({
     initialValues: {
-      schoolname: '',
-      schoolemail: '',
-      schoolphone: '',
-      username: '',
-      useremail: '',
-      userphone: '',
-      country: '',
-      state: '',
-      city: '',
-      area: '',
-      pincode: '',
-      taddress: '',
-      paddress: '',
-      wnumber: '',
-      facebook: '',
-      twitter: '',
-
-      linkedIn: '',
-      instagram: '',
-      photo: '',
-      idproof: '',
-      addressproof: '',
-      password: '',
-      cpassword: '',
+      SchoolName: '',
+      SchoolEmail: '',
+      SchoolPhone: '',
+      UserName: '',
+      UserEmail: '',
+      UserPhone: '',
+      Country: '',
+      State: '',
+      City: '',
+      Area: '',
+      Pincode: '',
+      Address: '',
+      WhatsApp: '',
+      Facebook: '',
+      Twitter: '',
+      LinkedIn: '',
+      Instagram: '',
+      Telegram: '',
+      Youtube: '',
+      Photo: '',
+      AddressProof: '',
+      IdProof: '',
+      Password: '',
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('schoolData', JSON.stringify(values));
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('SchoolName', values.SchoolName);
+        formData.append('SchoolEmail', values.SchoolEmail);
+        formData.append('SchoolPhone', values.SchoolPhone);
+        formData.append('UserName', values.UserName);
+        formData.append('UserEmail', values.UserEmail);
+        formData.append('UserPhone', values.UserPhone);
+        formData.append('Country', values.Country);
+        formData.append('State', values.State);
+        formData.append('City', values.City);
+        formData.append('Area', values.Area);
+        formData.append('Pincode', values.Pincode);
+        formData.append('Address', values.Address);
+        formData.append('WhatsApp', values.WhatsApp);
+        formData.append('Facebook', values.Facebook);
+        formData.append('Twitter', values.Twitter);
+        formData.append('LinkedIn', values.LinkedIn);
+        formData.append('Instagram', values.Instagram);
+        formData.append('Telegram', values.Telegram);
+        formData.append('Youtube', values.Youtube);
+        if (values.Photo instanceof File) {
+          formData.append('Photo', values.Photo);
+        } else {
+          formData.append('Photo', values.Photo);
+        }
+        if (values.AddressProof instanceof File) {
+          formData.append('AddressProof', values.AddressProof);
+        } else {
+          formData.append('AddressProof', values.AddressProof);
+        }
+        if (values.IdProof instanceof File) {
+          formData.append('IdProof', values.IdProof);
+        } else {
+          formData.append('IdProof', values.IdProof);
+        }
+        formData.append('Password', values.Password);
+        formData.append('Status', values.Status);
+
+        await AddSchool(formData);
+        console.log('====================================');
+        console.log(formData);
+        console.log('====================================');
+        navigate('/school/listing');
+      } catch (error) {
+        console.error('Error adding school:', error);
+      }
     },
   });
   const navigate = useNavigate();
-
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/school/listing');
   };
+
   return (
     <div>
       <Breadcrumb pageName="School Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
-          {/* <!-- Input Fields --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
@@ -125,14 +159,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="schoolname"
+                    name="SchoolName"
+                    value={formik.values.SchoolName}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your School Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.schoolname && formik.errors.schoolname && (
+                  {formik.touched.SchoolName && formik.errors.SchoolName && (
                     <small className="text-red-500">
-                      {formik.errors.schoolname}
+                      {formik.errors.SchoolName}
                     </small>
                   )}
                 </div>
@@ -141,15 +177,17 @@ const SchoolAdd = () => {
                     School Email <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="email"
-                    name="schoolemail"
+                    type="text"
+                    name="SchoolEmail"
+                    value={formik.values.SchoolEmail}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your School Email"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.schoolemail && formik.errors.schoolemail && (
+                  {formik.touched.SchoolEmail && formik.errors.SchoolEmail && (
                     <small className="text-red-500">
-                      {formik.errors.schoolemail}
+                      {formik.errors.SchoolEmail}
                     </small>
                   )}
                 </div>
@@ -159,14 +197,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="schoolphone"
+                    name="SchoolPhone"
+                    value={formik.values.SchoolPhone}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your School Phone"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.schoolphone && formik.errors.schoolphone && (
+                  {formik.touched.SchoolPhone && formik.errors.SchoolPhone && (
                     <small className="text-red-500">
-                      {formik.errors.schoolphone}
+                      {formik.errors.SchoolPhone}
                     </small>
                   )}
                 </div>
@@ -176,14 +216,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="username"
+                    name="UserName"
+                    value={formik.values.UserName}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.username && formik.errors.username && (
+                  {formik.touched.UserName && formik.errors.UserName && (
                     <small className="text-red-500">
-                      {formik.errors.username}
+                      {formik.errors.UserName}
                     </small>
                   )}
                 </div>
@@ -192,15 +234,17 @@ const SchoolAdd = () => {
                     Email <span className="text-danger">*</span>
                   </label>
                   <input
-                    type="email"
-                    name="useremail"
+                    type="text"
+                    name="UserEmail"
+                    value={formik.values.UserEmail}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Email"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.useremail && formik.errors.useremail && (
+                  {formik.touched.UserEmail && formik.errors.UserEmail && (
                     <small className="text-red-500">
-                      {formik.errors.useremail}
+                      {formik.errors.UserEmail}
                     </small>
                   )}
                 </div>
@@ -210,14 +254,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="userphone"
+                    name="UserPhone"
+                    value={formik.values.UserPhone}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Phone"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.userphone && formik.errors.userphone && (
+                  {formik.touched.UserPhone && formik.errors.UserPhone && (
                     <small className="text-red-500">
-                      {formik.errors.userphone}
+                      {formik.errors.UserPhone}
                     </small>
                   )}
                 </div>
@@ -227,14 +273,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="country"
+                    name="Country"
+                    value={formik.values.Country}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Country"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.country && formik.errors.country && (
+                  {formik.touched.Country && formik.errors.Country && (
                     <small className="text-red-500">
-                      {formik.errors.country}
+                      {formik.errors.Country}
                     </small>
                   )}
                 </div>
@@ -244,14 +292,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="state"
+                    name="State"
+                    value={formik.values.State}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your State"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.state && formik.errors.state && (
+                  {formik.touched.State && formik.errors.State && (
                     <small className="text-red-500">
-                      {formik.errors.state}
+                      {formik.errors.State}
                     </small>
                   )}
                 </div>
@@ -261,13 +311,15 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="city"
+                    name="City"
+                    value={formik.values.City}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your City"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.city && formik.errors.city && (
-                    <small className="text-red-500">{formik.errors.city}</small>
+                  {formik.touched.City && formik.errors.City && (
+                    <small className="text-red-500">{formik.errors.City}</small>
                   )}
                 </div>
                 <div>
@@ -276,13 +328,15 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="area"
+                    name="Area"
+                    value={formik.values.Area}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Area"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.area && formik.errors.area && (
-                    <small className="text-red-500">{formik.errors.area}</small>
+                  {formik.touched.Area && formik.errors.Area && (
+                    <small className="text-red-500">{formik.errors.Area}</small>
                   )}
                 </div>
                 <div>
@@ -291,32 +345,37 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="pincode"
+                    name="Pincode"
+                    value={formik.values.Pincode}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Pincode"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.pincode && formik.errors.pincode && (
+                  {formik.touched.Pincode && formik.errors.Pincode && (
                     <small className="text-red-500">
-                      {formik.errors.pincode}
+                      {formik.errors.Pincode}
                     </small>
                   )}
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Temporary/Current Address{' '}
-                    <span className="text-danger">*</span>
+                    Address <span className="text-danger">*</span>
                   </label>
-                  <textarea
+
+                  <input
+                    type="text"
                     rows={1}
-                    name="taddress"
+                    name="Address"
+                    value={formik.values.Address}
                     onChange={formik.handleChange}
-                    placeholder="Enter Your Temporary/Current Address"
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Your Permanent/Home Address"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  ></textarea>
-                  {formik.touched.taddress && formik.errors.taddress && (
+                  />
+                  {formik.touched.Address && formik.errors.Address && (
                     <small className="text-red-500">
-                      {formik.errors.taddress}
+                      {formik.errors.Address}
                     </small>
                   )}
                 </div>
@@ -328,15 +387,17 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="wnumber"
+                    name="WhatsApp"
+                    value={formik.values.WhatsApp}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your WhatsApp Number
                     "
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.wnumber && formik.errors.wnumber && (
+                  {formik.touched.WhatsApp && formik.errors.WhatsApp && (
                     <small className="text-red-500">
-                      {formik.errors.wnumber}
+                      {formik.errors.WhatsApp}
                     </small>
                   )}
                 </div>
@@ -346,14 +407,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="facebook"
+                    name="Facebook"
+                    value={formik.values.Facebook}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Facebook"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.facebook && formik.errors.facebook && (
+                  {formik.touched.Facebook && formik.errors.Facebook && (
                     <small className="text-red-500">
-                      {formik.errors.facebook}
+                      {formik.errors.Facebook}
                     </small>
                   )}
                 </div>
@@ -363,51 +426,36 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="twitter"
+                    name="Twitter"
+                    value={formik.values.Twitter}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Twitter"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.twitter && formik.errors.twitter && (
+                  {formik.touched.Twitter && formik.errors.Twitter && (
                     <small className="text-red-500">
-                      {formik.errors.twitter}
+                      {formik.errors.Twitter}
                     </small>
                   )}
                 </div>
 
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Permanent/Home Address{' '}
-                    <span className="text-danger">*</span>
-                  </label>
-
-                  <textarea
-                    rows={1}
-                    name="paddress"
-                    onChange={formik.handleChange}
-                    placeholder="Enter Your Permanent/Home Address"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  ></textarea>
-                  {formik.touched.paddress && formik.errors.paddress && (
-                    <small className="text-red-500">
-                      {formik.errors.paddress}
-                    </small>
-                  )}
-                </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     LinkedIn <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    name="linkedIn"
+                    name="LinkedIn"
+                    value={formik.values.LinkedIn}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your LinkedIn"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.linkedIn && formik.errors.linkedIn && (
+                  {formik.touched.LinkedIn && formik.errors.LinkedIn && (
                     <small className="text-red-500">
-                      {formik.errors.linkedIn}
+                      {formik.errors.LinkedIn}
                     </small>
                   )}
                 </div>
@@ -417,14 +465,54 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="instagram"
+                    name="Instagram"
+                    value={formik.values.Instagram}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Instagram"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.instagram && formik.errors.instagram && (
+                  {formik.touched.Instagram && formik.errors.Instagram && (
                     <small className="text-red-500">
-                      {formik.errors.instagram}
+                      {formik.errors.Instagram}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Telegram <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Telegram"
+                    value={formik.values.Telegram}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Your Telegram"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.Telegram && formik.errors.Telegram && (
+                    <small className="text-red-500">
+                      {formik.errors.Telegram}
+                    </small>
+                  )}
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Youtube <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="Youtube"
+                    value={formik.values.Youtube}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder="Enter Your Youtube"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.Youtube && formik.errors.Youtube && (
+                    <small className="text-red-500">
+                      {formik.errors.Youtube}
                     </small>
                   )}
                 </div>
@@ -435,36 +523,22 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="photo"
-                    onChange={formik.handleChange}
+                    name="Photo"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        'Photo',
+                        event.currentTarget.files[0],
+                      );
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.photo && formik.errors.photo && (
+                  {formik.touched.Photo && formik.errors.Photo && (
                     <small className="text-red-500">
-                      {formik.errors.photo}
+                      {formik.errors.Photo}
                     </small>
                   )}
 
-                  <p>Please select an a png,jpeg,jpg,gif file only.</p>
-                </div>
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    IdProof
-                    <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="file"
-                    name="idproof"
-                    onChange={formik.handleChange}
-                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  />
-                  {formik.touched.idproof && formik.errors.idproof && (
-                    <small className="text-red-500">
-                      {formik.errors.idproof}
-                    </small>
-                  )}
-
-                  <p>Please select an a png,jpeg,jpg,gif file only.</p>
+                  <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -473,17 +547,46 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="addressproof"
-                    onChange={formik.handleChange}
+                    name="AddressProof"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        'AddressProof',
+                        event.currentTarget.files[0],
+                      );
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
-                  {formik.touched.addressproof &&
-                    formik.errors.addressproof && (
+                  {formik.touched.AddressProof &&
+                    formik.errors.AddressProof && (
                       <small className="text-red-500">
-                        {formik.errors.addressproof}
+                        {formik.errors.AddressProof}
                       </small>
                     )}
-                  <p>Please select an a png,jpeg,jpg,gif file only.</p>
+
+                  <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
+                </div>
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    IdProof
+                    <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="file"
+                    name="IdProof"
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        'IdProof',
+                        event.currentTarget.files[0],
+                      );
+                    }}
+                    className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
+                  />
+                  {formik.touched.IdProof && formik.errors.IdProof && (
+                    <small className="text-red-500">
+                      {formik.errors.IdProof}
+                    </small>
+                  )}
+                  <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                 </div>
 
                 <div>
@@ -492,31 +595,16 @@ const SchoolAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="password"
+                    name="Password"
+                    value={formik.values.Password}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Your Password"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-                  {formik.touched.password && formik.errors.password && (
+                  {formik.touched.Password && formik.errors.Password && (
                     <small className="text-red-500">
-                      {formik.errors.password}
-                    </small>
-                  )}
-                </div>
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Confirm Password <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="cpassword"
-                    onChange={formik.handleChange}
-                    placeholder="Enter Your Confirm Password"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                  {formik.touched.cpassword && formik.errors.cpassword && (
-                    <small className="text-red-500">
-                      {formik.errors.cpassword}
+                      {formik.errors.Password}
                     </small>
                   )}
                 </div>
@@ -534,7 +622,7 @@ const SchoolAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
                     Active
                   </div>
@@ -545,7 +633,7 @@ const SchoolAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
                     In Active
                   </div>
@@ -562,8 +650,8 @@ const SchoolAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

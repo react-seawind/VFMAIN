@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
+import { AddPayment } from '../../API/PaymentAPI';
 
 const validationSchema = yup.object().shape({
   schoolname: yup
@@ -24,15 +25,37 @@ const PaymentAdd = () => {
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('paymentData', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        const formData = new FormData();
+        formData.append('Title', values.Title);
+        formData.append('Slug', values.Slug);
+        if (values.Icon instanceof File) {
+          formData.append('Icon', values.Icon);
+        } else {
+          formData.append('Icon', values.Icon);
+        }
+        if (values.Image instanceof File) {
+          formData.append('Image', values.Image);
+        } else {
+          formData.append('Image', values.Image);
+        }
+        formData.append('Content', values.Content);
+        formData.append('Status', values.Status);
+
+        await AddPayment(formData);
+        actions.resetForm();
+        navigate('/payment/listing');
+      } catch (error) {
+        console.error('Error adding payment:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/payment/listing');
   };
   return (
     <div>
@@ -109,9 +132,9 @@ const PaymentAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
-                    Paid
+                    Active
                   </div>
                   <div>
                     <input
@@ -120,12 +143,12 @@ const PaymentAdd = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
-                    UnPaid
+                    In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is unpaid.</p>
+                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">
@@ -137,8 +160,8 @@ const PaymentAdd = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>

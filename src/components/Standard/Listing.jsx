@@ -4,9 +4,10 @@ import Breadcrumb from '../Breadcrumb';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../API';
+import { deleteStandard, getAllStandard } from '../../API/StandardApi';
 
 const StandardListing = () => {
-  const [service, setservice] = useState([]);
+  const [standard, setstandard] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
@@ -17,10 +18,9 @@ const StandardListing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getServicedata();
-        setservice(result);
+        const result = await getAllStandard();
+        setstandard(result);
         setfilterdata(result);
-        console.log(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -28,38 +28,70 @@ const StandardListing = () => {
 
     fetchData();
   }, []);
+  // -------------------delete standard------------------
+  const handleDelete = async (row) => {
+    try {
+      await deleteStandard(row.Id);
+      setstandard((prevstandard) =>
+        prevstandard.filter((item) => item.Id !== row.Id),
+      );
+      setfilterdata((prevFilterData) =>
+        prevFilterData.filter((item) => item.Id !== row.Id),
+      );
+    } catch (error) {
+      console.error('Error deleting standard:', error);
+    }
+  };
+
+  useEffect(() => {
+    const mySearch = standard.filter(
+      (item) =>
+        item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
+    );
+    setfilterdata(mySearch);
+  }, [search]);
 
   const columns = [
     {
-      name: ' # ',
+      name: '#',
       selector: (row) => <h1 className="text-base">{row.Id}</h1>,
-      sortable: true,
     },
     {
       name: 'Title',
       selector: (row) => <h1 className="text-base">{row.Title}</h1>,
-      sortable: true,
     },
-    {
-      name: 'SubTitle',
-      selector: (row) => <h1 className="text-base">{row.SubTitle}</h1>,
-      sortable: true,
-    },
+
     {
       name: 'Image',
       selector: (row) => (
         <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
       ),
-      sortable: true,
     },
     {
       name: 'Status',
+      selector: (row) => {
+        const statusText = row.Status == '1' ? 'Active' : 'Inactive';
+        const statusColor =
+          row.Status == '1'
+            ? 'bg-green-600 text-white'
+            : 'bg-red-600 text-white';
+
+        return (
+          <span
+            className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded-full  ${statusColor}`}
+          >
+            {statusText}
+          </span>
+        );
+      },
+    },
+    {
+      name: 'Entry Date',
       selector: (row) => (
-        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-          Active
-        </span>
+        <h1 className="text-base">
+          {format(new Date(row.EntDt), 'MM/dd/yyyy hh:mm a')}
+        </h1>
       ),
-      sortable: true,
     },
     {
       name: 'Action',
@@ -77,21 +109,28 @@ const StandardListing = () => {
           </div>
 
           {selectedRow && selectedRow.Id === row.Id && (
-            <div className="action-buttons ml-3">
+            <div className="action-buttons  absolute z-99">
               <button
-                className=" text-black bg-white border  p-2 w-26"
+                className="text-black bg-white border  p-2 w-26"
                 onClick={() => {
                   setSelectedRow(null);
-                  Navigate('/standard/edit');
+                  Navigate(`/standard/edit/${row.Id}`);
                 }}
               >
                 Edit
               </button>
+
               <br />
               <button
                 className=" text-black bg-white border  p-2 w-26"
                 onClick={() => {
-                  alert(`Deleting ${row.Title}`);
+                  if (
+                    window.confirm(
+                      `Are you sure you want to delete ${row.Title}?`,
+                    )
+                  ) {
+                    handleDelete(row); // Call handleDelete function on click of delete button
+                  }
                   setSelectedRow(null);
                 }}
               >
@@ -104,13 +143,6 @@ const StandardListing = () => {
     },
   ];
 
-  useEffect(() => {
-    const mySearch = service.filter(
-      (item) =>
-        item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
-    );
-    setfilterdata(mySearch);
-  }, [search]);
   return (
     <div>
       <Breadcrumb pageName="Standard Listing" />

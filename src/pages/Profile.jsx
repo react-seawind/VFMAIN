@@ -1,39 +1,113 @@
 import { BsEnvelope, BsImage } from 'react-icons/bs';
 import Breadcrumb from '../components/Breadcrumb';
-import Logo from '../images/logo.jpg';
 import { FaRegUser } from 'react-icons/fa';
-import { useState } from 'react';
-const Profile = () => {
-  // const [color, setcolor] = useState('bg-meta-1');
-  // const alertfun = (id) => {
-  //   console.log(id);
-  //   const buttonclass = document.getElementsByClassName('b' + id);
-  //   buttonclass.addClass('bg-meta-3');
-  // };
+import { useEffect, useState } from 'react';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { UpdateAdminById, getAdmindataById } from '../API/AdminAPI';
 
+const validationSchema = yup.object().shape({
+  Name: yup.string().required('Name is required'),
+});
+
+const Profile = () => {
+  const { adminId } = useParams();
+  const [adminData, setAdminData] = useState({});
+
+  // ================GetData==============
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAdmindataById(adminId);
+        setAdminData(response.responsedata[0]);
+        formik.setValues({
+          Name: response.responsedata[0].Name || '',
+          Email: response.responsedata[0].Email || '',
+          Image: response.responsedata[0].Image || '',
+          Hid_Image: response.responsedata[0].Hid_Image || '',
+          Id: response.responsedata[0].Id || '',
+        });
+      } catch (error) {
+        console.log('Error fetching admin data');
+      }
+    };
+    fetchData();
+  }, [adminId]);
+
+  const formik = useFormik({
+    initialValues: {
+      Name: '',
+      Email: '',
+      Image: null,
+      Id: '',
+      Hid_Image: '',
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append('Name', values.Name);
+        formData.append('Email', values.Email);
+        if (values.Image instanceof File) {
+          formData.append('Image', values.Image);
+        }
+        formData.append('Hid_Image', values.Hid_Image);
+        formData.append('Id', values.Id);
+
+        await UpdateAdminById(formData);
+      } catch (error) {
+        console.error('Error updating admin:', error);
+      }
+    },
+  });
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate('/dashboard');
+  };
   return (
     <div>
       <Breadcrumb pageName="Profile" />
 
-      <div className="grid grid-cols-5 gap-8">
-        <div className="col-span-5 xl:col-span-2">
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                <img src={Logo} alt="" className="w-35 mx-auto" />
-              </h3>
-            </div>
-            <div className="p-7">
-              <form>
+      <div className="">
+        <form className="grid grid-cols-5 gap-8" onSubmit={formik.handleSubmit}>
+          <input
+            type="hidden"
+            name="Hid_Image"
+            value={formik.values.Hid_Image}
+          />
+
+          <div className="col-span-5 xl:col-span-2">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                <h3 className="font-medium text-black dark:text-white">
+                  <img
+                    src={formik.values.Image}
+                    alt=""
+                    className="w-35 mx-auto"
+                  />
+                </h3>
+              </div>
+              <div className="p-7">
                 <div
                   id="FileUpload"
-                  className="relative       cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray   dark:bg-meta-4 sm:py-7.5"
+                  className="relative cursor-pointer appearance-none rounded border-2 border-dashed border-primary bg-gray   dark:bg-meta-4 sm:py-7.5"
                 >
                   <input
                     type="file"
+                    onChange={(event) =>
+                      formik.setFieldValue(
+                        'Image',
+                        event.currentTarget.files[0],
+                      )
+                    }
+                    name="Image"
                     accept="image/*"
                     className="absolute inset-0 z-50 m-0   cursor-pointer p-0 opacity-0 outline-none"
                   />
+
                   <div className="flex flex-col items-center justify-center space-y-3">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
                       <BsImage />
@@ -43,21 +117,22 @@ const Profile = () => {
                     </p>
                   </div>
                 </div>
-              </form>
+                {formik.touched.Image && formik.errors.Image && (
+                  <small className="text-red-500">{formik.errors.Image}</small>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-span-5 xl:col-span-3">
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                Personal Information
-              </h3>
-            </div>
-            <div className="p-7">
-              <form action="#">
+          <div className="col-span-5 xl:col-span-3">
+            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                <h3 className="font-medium text-black dark:text-white">
+                  Personal Information
+                </h3>
+              </div>
+              <div className="p-7">
                 <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
-                  <div className="w-full sm:w-1/2">
+                  <div className="w-full  ">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
                       htmlFor="fullName"
@@ -71,27 +146,18 @@ const Profile = () => {
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="text"
-                        name="fullName"
-                        id="fullName"
+                        onChange={formik.handleChange}
+                        name="Name"
+                        value={formik.values.Name}
                         placeholder="User name"
                       />
-                    </div>
-                  </div>
 
-                  <div className="w-full sm:w-1/2">
-                    <label
-                      className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="phoneNumber"
-                    >
-                      Phone Number
-                    </label>
-                    <input
-                      className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                      type="text"
-                      name="phoneNumber"
-                      id="phoneNumber"
-                      placeholder="Phone Number"
-                    />
+                      {formik.touched.Name && formik.errors.Name && (
+                        <small className="text-red-500">
+                          {formik.errors.Name}
+                        </small>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -109,33 +175,26 @@ const Profile = () => {
                     <input
                       className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                       type="email"
-                      name="emailAddress"
-                      id="emailAddress"
+                      onChange={formik.handleChange}
+                      name="Email"
+                      readOnly
+                      value={formik.values.Email}
                       placeholder="Enter email"
                     />
-                  </div>
-                </div>
 
-                <div className="mb-5.5">
-                  <label
-                    className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="Username"
-                  >
-                    Username
-                  </label>
-                  <input
-                    className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-                    type="text"
-                    name="Username"
-                    id="Username"
-                    placeholder="Username"
-                  />
+                    {formik.touched.Email && formik.errors.Email && (
+                      <small className="text-red-500">
+                        {formik.errors.Email}
+                      </small>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-4.5">
                   <button
                     className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                    type="submit"
+                    onClick={handleGoBack}
+                    type="button"
                   >
                     Cancel
                   </button>
@@ -146,10 +205,10 @@ const Profile = () => {
                     Save
                   </button>
                 </div>
-              </form>
+              </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

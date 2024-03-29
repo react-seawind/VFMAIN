@@ -25,6 +25,7 @@ import ChapterEdit from '../components/Chapter/Edit';
 import TopicListing from '../components/Topic/Listing';
 import TopicAdd from '../components/Topic/Add';
 import TopicEdit from '../components/Topic/Edit';
+import ChangePassword from '../components/School/ChangePassword';
 
 const coreRoutes = [
   {
@@ -58,8 +59,12 @@ const coreRoutes = [
     component: SchoolAdd,
   },
   {
-    path: '/school/edit',
+    path: '/school/edit/:Id',
     component: SchoolEdit,
+  },
+  {
+    path: '/school/changepassword/:Id',
+    component: ChangePassword,
   },
   // -------------------
   // =================payment=============
@@ -72,7 +77,7 @@ const coreRoutes = [
     component: PaymentAdd,
   },
   {
-    path: '/payment/edit',
+    path: '/payment/edit/:Id',
     component: PaymentEdit,
   },
   // =================REPOET=============
@@ -99,7 +104,7 @@ const coreRoutes = [
     component: StandardAdd,
   },
   {
-    path: '/standard/edit',
+    path: '/standard/edit/:Id',
     component: StandardEdit,
   },
   // =================subject=============
@@ -112,7 +117,7 @@ const coreRoutes = [
     component: SubjectAdd,
   },
   {
-    path: '/subject/edit',
+    path: '/subject/edit/:Id',
     component: SubjectEdit,
   },
   // =================chapter=============
@@ -125,7 +130,7 @@ const coreRoutes = [
     component: ChapterAdd,
   },
   {
-    path: '/chapter/edit',
+    path: '/chapter/edit/:Id',
     component: ChapterEdit,
   },
   // =================topic=============
@@ -138,7 +143,7 @@ const coreRoutes = [
     component: TopicAdd,
   },
   {
-    path: '/topic/edit',
+    path: '/topic/edit/:Id',
     component: TopicEdit,
   },
 ];

@@ -2,10 +2,8 @@ import React from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Logo from '../../images/logo.jpg';
-import { BsChevronDown } from 'react-icons/bs';
-import { IoMdClose } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getStandardById, updateStandardById } from '../../API/StandardApi';
 
 const validationSchema = yup.object().shape({
   stdname: yup.string().required('Standard Name is required'),
@@ -14,6 +12,33 @@ const validationSchema = yup.object().shape({
 });
 
 const StandardEdit = () => {
+  // ================ Get data by Id============
+  const { Id } = useParams();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (Id) {
+          const StandardData = await getStandardById(Id);
+          formik.setValues({
+            Id: StandardData.Id || '',
+            Title: StandardData.Title || '',
+            Slug: StandardData.Slug || '',
+            Image: StandardData.Image || '',
+            Hid_Image: StandardData.Hid_Image || '',
+            Status: StandardData.Status || '0',
+          });
+        } else {
+          console.log('error');
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [Id]);
+
   const formik = useFormik({
     initialValues: {
       stdname: '',
@@ -22,15 +47,26 @@ const StandardEdit = () => {
       Status: '',
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      localStorage.setItem('StandardEditData', JSON.stringify(values));
+    onSubmit: async (values, actions) => {
+      try {
+        const formData = new FormData();
+        formData.append('Id', Id);
+        formData.append('Title', values.Title);
+        formData.append('Slug', values.Slug);
+
+        formData.append('Status', values.Status);
+
+        await updateStandardById(formData);
+      } catch (error) {
+        console.error('Error updating slider:', error);
+      }
     },
   });
 
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    navigate('/standard/listing');
   };
   return (
     <div>
@@ -93,25 +129,29 @@ const StandardEdit = () => {
                   <input
                     type="file"
                     name="stdname"
-                    onChange={formik.handleChange}
+                    onChange={(event) => {
+                      formik.setFieldValue(
+                        'Image',
+                        event.currentTarget.files[0],
+                      );
+                    }}
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
 
                   {formik.touched.icon && formik.errors.icon && (
                     <small className="text-red-500">{formik.errors.icon}</small>
                   )}
-                  <p>Please select an a png,jpeg,jpg,gif file only.</p>
+                  <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                 </div>
                 <div className="mt-5">
-                  <p>Your Exsisting Img File*</p>
+                  <p>Your Exsisting Img File</p>
                   <div className="grid grid-cols-4 gap-2 relative">
                     <div className="relative">
                       <img
-                        src={Logo}
+                        src={formik.values.Image}
                         alt=""
-                        className="w-full rounded border p-2 "
+                        className="rounded border p-2 h-28 w-28"
                       />
-                      <IoMdClose className="absolute top-1 right-1 bg-black text-white cursor-pointer" />
                     </div>
                   </div>
                 </div>
@@ -129,9 +169,9 @@ const StandardEdit = () => {
                       name="Status"
                       className="mx-2"
                       value="1"
-                      // checked={blogadd.Status === '1'}
+                      checked={formik.values.Status == '1'}
                     />
-                    Paid
+                    Active
                   </div>
                   <div>
                     <input
@@ -140,12 +180,12 @@ const StandardEdit = () => {
                       name="Status"
                       className="mx-2"
                       value="0"
-                      // checked={blogadd.Status == = '0'}
+                      checked={formik.values.Status == '0'}
                     />
-                    UnPaid
+                    In Active
                   </div>
                 </div>
-                <p>Please select an a one status by default is unpaid.</p>
+                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">
@@ -157,8 +197,8 @@ const StandardEdit = () => {
                 </button>
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
-                  type="submit"
                   onClick={handleGoBack}
+                  type="button"
                 >
                   Cancel
                 </button>
