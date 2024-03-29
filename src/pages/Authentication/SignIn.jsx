@@ -6,8 +6,7 @@ import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
-import { AdminLogin } from '../../API/AdminAPI';
-
+import { AdminLogin } from '../../components/API';
 const validationSchema = yup.object().shape({
   Email: yup.string().required('Email is required'),
   Password: yup.string().required('Password is required'),
