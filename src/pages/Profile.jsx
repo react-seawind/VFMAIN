@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { UpdateAdminById, getAdmindataById } from '../components/API';
+import { UpdateAdminById, getAdmindataById } from '../API/AdminApi';
 const validationSchema = yup.object().shape({
   Name: yup.string().required('Name is required'),
 });

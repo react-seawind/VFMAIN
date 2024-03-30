@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { ChangePassword } from '../components/API';
+import { ChangePassword } from '../API/AdminApi';
 const validateSchema = Yup.object().shape({
   OldPassword: Yup.string().required('Old Password is required.'),
   NewPassword: Yup.string().required('New Password is required.'),
