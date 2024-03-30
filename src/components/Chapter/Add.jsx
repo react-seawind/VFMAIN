@@ -9,11 +9,11 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 
 const validationSchema = yup.object().shape({
-  stdname: yup.string().required('Standard Name is required'),
-  subname: yup.string().required('Subject Name is required'),
-  chaptername: yup.string().required('Chapter Name is required'),
-  slug: yup.string().required('Slug is required'),
-  icon: yup.string().required('Icon is required'),
+  StandardId: yup.string().required('Standard is required'),
+  SubjectId: yup.string().required('Subject is required'),
+  Title: yup.string().required('Subject Name is required'),
+  Slug: yup.string().required('Slug is required'),
+  // Image: yup.string().required('Icon is required'),
 });
 
 const ChapterAdd = () => {
@@ -49,24 +49,26 @@ const ChapterAdd = () => {
 
   const formik = useFormik({
     initialValues: {
-      stdname: '',
-      subname: '',
-      chaptername: '',
-      slug: '',
-      icon: '',
+      StandardId: '',
+      SubjectId: '',
+      Title: '',
+      Slug: '',
+      Image: '',
       Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
+        formData.append('StandardId', values.StandardId);
+        formData.append('SubjectId', values.SubjectId);
         formData.append('Title', values.Title);
         if (values.Image instanceof File) {
           formData.append('Image', values.Image);
         } else {
           formData.append('Image', values.Image);
         }
-        formData.append('Content', values.Content);
+        formData.append('Slug', values.Slug);
         formData.append('Status', values.Status);
 
         await AddChapter(formData);
@@ -109,7 +111,7 @@ const ChapterAdd = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="stdname"
+                      name="StandardId"
                       onChange={formik.handleChange}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
@@ -123,9 +125,9 @@ const ChapterAdd = () => {
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>
-                    {formik.touched.stdname && formik.errors.stdname && (
+                    {formik.touched.StandardId && formik.errors.StandardId && (
                       <small className="text-red-500">
-                        {formik.errors.stdname}
+                        {formik.errors.StandardId}
                       </small>
                     )}
                   </div>
@@ -136,7 +138,7 @@ const ChapterAdd = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="subname"
+                      name="SubjectId"
                       onChange={formik.handleChange}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
@@ -150,9 +152,9 @@ const ChapterAdd = () => {
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>
-                    {formik.touched.subname && formik.errors.subname && (
+                    {formik.touched.SubjectId && formik.errors.SubjectId && (
                       <small className="text-red-500">
-                        {formik.errors.subname}
+                        {formik.errors.SubjectId}
                       </small>
                     )}
                   </div>
@@ -163,15 +165,15 @@ const ChapterAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="chaptername"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Chapter Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.chaptername && formik.errors.chaptername && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.chaptername}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -181,14 +183,14 @@ const ChapterAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="slug"
+                    name="Slug"
                     onChange={formik.handleChange}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.slug && formik.errors.slug && (
-                    <small className="text-red-500">{formik.errors.slug}</small>
+                  {formik.touched.Slug && formik.errors.Slug && (
+                    <small className="text-red-500">{formik.errors.Slug}</small>
                   )}
                 </div>
                 <div>
@@ -197,7 +199,7 @@ const ChapterAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="stdname"
+                    name="Image"
                     onChange={(event) => {
                       formik.setFieldValue(
                         'Image',
@@ -207,8 +209,10 @@ const ChapterAdd = () => {
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
 
-                  {formik.touched.icon && formik.errors.icon && (
-                    <small className="text-red-500">{formik.errors.icon}</small>
+                  {formik.touched.Image && formik.errors.Image && (
+                    <small className="text-red-500">
+                      {formik.errors.Image}
+                    </small>
                   )}
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                 </div>

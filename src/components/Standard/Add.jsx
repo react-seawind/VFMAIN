@@ -6,17 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import { AddStandard } from '../../API/StandardApi';
 
 const validationSchema = yup.object().shape({
-  stdname: yup.string().required('Standard Name is required'),
-  slug: yup.string().required('Slug is required'),
-  icon: yup.string().required('Icon is required'),
+  Title: yup.string().required('Standard Name is required'),
+  Slug: yup.string().required('Slug is required'),
+  Image: yup.string().required('Image is required'),
 });
 
 const StandardAdd = () => {
   const formik = useFormik({
     initialValues: {
-      stdname: '',
-      slug: '',
-      icon: '',
+      Title: '',
+      Slug: '',
+      Image: '',
       Status: '',
     },
     validationSchema: validationSchema,
@@ -29,7 +29,7 @@ const StandardAdd = () => {
         } else {
           formData.append('Image', values.Image);
         }
-        formData.append('Content', values.Content);
+        formData.append('Slug', values.Slug);
         formData.append('Status', values.Status);
 
         await AddStandard(formData);
@@ -72,15 +72,17 @@ const StandardAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="stdname"
+                    name="Title"
+                    value={formik.values.Title}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Standard Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -90,23 +92,25 @@ const StandardAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="slug"
+                    name="Slug"
+                    value={formik.values.Slug}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.slug && formik.errors.slug && (
-                    <small className="text-red-500">{formik.errors.slug}</small>
+                  {formik.touched.Slug && formik.errors.Slug && (
+                    <small className="text-red-500">{formik.errors.Slug}</small>
                   )}
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Icon <span className="text-danger">*</span>
+                    Image <span className="text-danger">*</span>
                   </label>
                   <input
                     type="file"
-                    name="stdname"
+                    name="Image"
                     onChange={(event) => {
                       formik.setFieldValue(
                         'Image',
@@ -116,8 +120,10 @@ const StandardAdd = () => {
                     className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent font-medium outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:py-3 file:px-5 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
                   />
 
-                  {formik.touched.icon && formik.errors.icon && (
-                    <small className="text-red-500">{formik.errors.icon}</small>
+                  {formik.touched.Image && formik.errors.Image && (
+                    <small className="text-red-500">
+                      {formik.errors.Image}
+                    </small>
                   )}
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                 </div>

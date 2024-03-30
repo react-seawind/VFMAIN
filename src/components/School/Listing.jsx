@@ -57,7 +57,7 @@ const SchoolListing = () => {
       selector: (row) => <h1 className="text-base">{row.Id}</h1>,
     },
     {
-      name: 'Title',
+      name: 'SchoolName',
       selector: (row) => <h1 className="text-base">{row.SchoolName}</h1>,
     },
 

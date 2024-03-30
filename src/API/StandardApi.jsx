@@ -15,7 +15,7 @@ const headers = {
 // =========================Get All Standard=========================
 export const getAllStandard = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/Standard`, {
+    const response = await axios.get(`${API_BASE_URL}/standard`, {
       headers,
     });
     return response.data.responsedata;
@@ -27,7 +27,7 @@ export const getAllStandard = async () => {
 // ----------------------getStandardbyId----------------
 export const getStandardById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/Standard/${Id}`, {
+    const response = await axios.get(`${API_BASE_URL}/standard/${Id}`, {
       headers,
     });
 
@@ -44,7 +44,7 @@ export const getStandardById = async (Id) => {
 // ===================Edit Standard================D
 export const updateStandardById = async (formData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/Standard`, formData, {
+    const response = await axios.put(`${API_BASE_URL}/standard`, formData, {
       headers,
       'Content-Type': 'multipart/form-data',
     });
@@ -64,7 +64,7 @@ export const updateStandardById = async (formData) => {
 // ------------------------Add Standard---------------------
 export const AddStandard = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/Standard`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/standard`, formData, {
       headers,
     });
     if (response.data.status === true) {
@@ -81,7 +81,7 @@ export const AddStandard = async (formData) => {
 // ------------------------delete Standard---------------------
 export const deleteStandard = async (Id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/Standard/${Id}`, {
+    const response = await axios.delete(`${API_BASE_URL}/standard/${Id}`, {
       headers,
     });
     if (response.data.status === true) {

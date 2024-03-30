@@ -17,7 +17,7 @@ const headers = {
 // =========================Get All Subject=========================
 export const getAllSubject = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/Subject`, {
+    const response = await axios.get(`${API_BASE_URL}/subject`, {
       headers,
     });
     return response.data.responsedata;
@@ -29,7 +29,7 @@ export const getAllSubject = async () => {
 // ----------------------getSubjectbyId----------------
 export const getSubjectById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/Subject/${Id}`, {
+    const response = await axios.get(`${API_BASE_URL}/subject/${Id}`, {
       headers,
     });
 
@@ -46,7 +46,7 @@ export const getSubjectById = async (Id) => {
 // ===================Edit Subject================D
 export const updateSubjectById = async (formData) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/Subject`, formData, {
+    const response = await axios.put(`${API_BASE_URL}/subject`, formData, {
       headers,
       'Content-Type': 'multipart/form-data',
     });
@@ -66,7 +66,7 @@ export const updateSubjectById = async (formData) => {
 // ------------------------Add Subject---------------------
 export const AddSubject = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/Subject`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/subject`, formData, {
       headers,
     });
     if (response.data.status === true) {
@@ -83,7 +83,7 @@ export const AddSubject = async (formData) => {
 // ------------------------delete Subject---------------------
 export const deleteSubject = async (Id) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/Subject/${Id}`, {
+    const response = await axios.delete(`${API_BASE_URL}/subject/${Id}`, {
       headers,
     });
     if (response.data.status === true) {

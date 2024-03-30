@@ -82,7 +82,7 @@ import Loader from './common/Loader/index';
 import routes from './routes/index.jsx';
 import RequireAuth from './Private/Requiredau';
 
-const DefaultLayout = lazy(() => import('./layout/DefaultLayout'));
+const DefaultLayout = lazy(() => import('./layout/DefaultLayout.jsx'));
 const SignIn = lazy(() => import('./pages/Authentication/SignIn.jsx'));
 
 function App() {

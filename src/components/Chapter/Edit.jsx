@@ -11,11 +11,11 @@ import { getAllSubject } from '../../API/SubjectAPI';
 import { getChapterById, updateChapterById } from '../../API/ChapterApi';
 
 const validationSchema = yup.object().shape({
-  stdname: yup.string().required('Standard Name is required'),
-  subname: yup.string().required('Subject Name is required'),
-  chaptername: yup.string().required('Chapter Name is required'),
-  slug: yup.string().required('Slug is required'),
-  icon: yup.string().required('Icon is required'),
+  StandardId: yup.string().required('Standard is required'),
+  SubjectId: yup.string().required('Subject is required'),
+  Title: yup.string().required('Subject Name is required'),
+  Slug: yup.string().required('Slug is required'),
+  // Image: yup.string().required('Icon is required'),
 });
 
 const ChapterEdit = () => {
@@ -29,6 +29,8 @@ const ChapterEdit = () => {
           const ChapterData = await getChapterById(Id);
           formik.setValues({
             Id: ChapterData.Id || '',
+            StandardId: ChapterData.StandardId || '',
+            SubjectId: ChapterData.SubjectId || '',
             Title: ChapterData.Title || '',
             Slug: ChapterData.Slug || '',
             Image: ChapterData.Image || '',
@@ -77,20 +79,33 @@ const ChapterEdit = () => {
   }, []);
   const formik = useFormik({
     initialValues: {
-      stdname: '',
-      subname: '',
-      chaptername: '',
-      slug: '',
-      icon: '',
+      StandardId: '',
+      SubjectId: '',
+      Title: '',
+      Slug: '',
+      Image: '',
+      Hid_Image: '',
       Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', Id);
+        formData.append('Id', values.Id);
+        formData.append('StandardId', values.StandardId);
+        formData.append('SubjectId', values.SubjectId);
         formData.append('Title', values.Title);
         formData.append('Slug', values.Slug);
+        if (values.Image instanceof File) {
+          formData.append('Image', values.Image);
+        } else {
+          formData.append('Image', values.Image);
+        }
+        if (values.Hid_Image instanceof File) {
+          formData.append('Hid_Image', values.Hid_Image);
+        } else {
+          formData.append('Hid_Image', values.Hid_Image);
+        }
 
         formData.append('Status', values.Status);
 
@@ -137,8 +152,10 @@ const ChapterEdit = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="stdname"
+                      name="StandardId"
+                      value={formik.values.StandardId}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
                       {std.map((std) => (
@@ -150,9 +167,9 @@ const ChapterEdit = () => {
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>
-                    {formik.touched.stdname && formik.errors.stdname && (
+                    {formik.touched.StandardId && formik.errors.StandardId && (
                       <small className="text-red-500">
-                        {formik.errors.stdname}
+                        {formik.errors.StandardId}
                       </small>
                     )}
                   </div>
@@ -163,8 +180,10 @@ const ChapterEdit = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="subname"
+                      name="SubjectId"
+                      value={formik.values.SubjectId}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
                       {subject.map((subject) => (
@@ -176,9 +195,9 @@ const ChapterEdit = () => {
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>
-                    {formik.touched.subname && formik.errors.subname && (
+                    {formik.touched.SubjectId && formik.errors.SubjectId && (
                       <small className="text-red-500">
-                        {formik.errors.subname}
+                        {formik.errors.SubjectId}
                       </small>
                     )}
                   </div>
@@ -189,15 +208,17 @@ const ChapterEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="chaptername"
+                    name="Title"
+                    value={formik.values.Title}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Chapter Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.chaptername && formik.errors.chaptername && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.chaptername}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -207,14 +228,16 @@ const ChapterEdit = () => {
                   </label>
                   <input
                     type="text"
-                    name="slug"
+                    name="Slug"
+                    value={formik.values.Slug}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.slug && formik.errors.slug && (
-                    <small className="text-red-500">{formik.errors.slug}</small>
+                  {formik.touched.Slug && formik.errors.Slug && (
+                    <small className="text-red-500">{formik.errors.Slug}</small>
                   )}
                 </div>
                 <div>
@@ -223,7 +246,7 @@ const ChapterEdit = () => {
                   </label>
                   <input
                     type="file"
-                    name="stdname"
+                    name="Image"
                     onChange={(event) => {
                       formik.setFieldValue(
                         'Image',

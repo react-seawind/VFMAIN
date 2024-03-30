@@ -14,7 +14,6 @@ const validationSchema = yup.object().shape({
 const Profile = () => {
   const { adminId } = useParams();
   const [adminData, setAdminData] = useState({});
-
   // ================GetData==============
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +33,6 @@ const Profile = () => {
     };
     fetchData();
   }, [adminId]);
-
   const formik = useFormik({
     initialValues: {
       Name: '',

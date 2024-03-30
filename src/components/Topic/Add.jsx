@@ -10,12 +10,12 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 
 const validationSchema = yup.object().shape({
-  stdname: yup.string().required('Standard Name is required'),
-  subname: yup.string().required('Subject Name is required'),
-  chaptername: yup.string().required('Chapter Name is required'),
-  topicname: yup.string().required('Topic Name is required'),
-  slug: yup.string().required('Slug is required'),
-  icon: yup.string().required('Icon is required'),
+  StandardId: yup.string().required('Standard is required'),
+  SubjectId: yup.string().required('Subject is required'),
+  ChapterId: yup.string().required('Chapter is required'),
+  Title: yup.string().required('Subject Name is required'),
+  Slug: yup.string().required('Slug is required'),
+  // Image: yup.string().required('Icon is required'),
 });
 
 const TopicAdd = () => {
@@ -66,25 +66,28 @@ const TopicAdd = () => {
 
   const formik = useFormik({
     initialValues: {
-      stdname: '',
-      subname: '',
-      chaptername: '',
-      topicname: '',
-      slug: '',
-      icon: '',
+      StandardId: '',
+      SubjectId: '',
+      ChapterId: '',
+      Title: '',
+      Slug: '',
+      Image: '',
       Status: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
+        formData.append('StandardId', values.StandardId);
+        formData.append('SubjectId', values.SubjectId);
+        formData.append('ChapterId', values.ChapterId);
         formData.append('Title', values.Title);
         if (values.Image instanceof File) {
           formData.append('Image', values.Image);
         } else {
           formData.append('Image', values.Image);
         }
-        formData.append('Content', values.Content);
+        formData.append('Slug', values.Slug);
         formData.append('Status', values.Status);
 
         await AddTopic(formData);
@@ -126,7 +129,7 @@ const TopicAdd = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="stdname"
+                      name="StandardId"
                       onChange={formik.handleChange}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
@@ -141,9 +144,9 @@ const TopicAdd = () => {
                       <BsChevronDown />
                     </span>
                   </div>
-                  {formik.touched.stdname && formik.errors.stdname && (
+                  {formik.touched.StandardId && formik.errors.StandardId && (
                     <small className="text-red-500">
-                      {formik.errors.stdname}
+                      {formik.errors.StandardId}
                     </small>
                   )}
                 </div>
@@ -153,7 +156,7 @@ const TopicAdd = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="subname"
+                      name="SubjectId"
                       onChange={formik.handleChange}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
@@ -167,9 +170,9 @@ const TopicAdd = () => {
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>
-                    {formik.touched.subname && formik.errors.subname && (
+                    {formik.touched.SubjectId && formik.errors.SubjectId && (
                       <small className="text-red-500">
-                        {formik.errors.subname}
+                        {formik.errors.SubjectId}
                       </small>
                     )}
                   </div>
@@ -180,7 +183,7 @@ const TopicAdd = () => {
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <select
-                      name="chaptername"
+                      name="ChapterId"
                       onChange={formik.handleChange}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
@@ -194,12 +197,11 @@ const TopicAdd = () => {
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>
-                    {formik.touched.chaptername &&
-                      formik.errors.chaptername && (
-                        <small className="text-red-500">
-                          {formik.errors.chaptername}
-                        </small>
-                      )}
+                    {formik.touched.ChapterId && formik.errors.ChapterId && (
+                      <small className="text-red-500">
+                        {formik.errors.ChapterId}
+                      </small>
+                    )}
                   </div>
                 </div>
                 <div>
@@ -208,15 +210,15 @@ const TopicAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="topicname"
+                    name="Title"
                     onChange={formik.handleChange}
                     placeholder="Enter Topic Name"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.topicname && formik.errors.topicname && (
+                  {formik.touched.Title && formik.errors.Title && (
                     <small className="text-red-500">
-                      {formik.errors.topicname}
+                      {formik.errors.Title}
                     </small>
                   )}
                 </div>
@@ -226,14 +228,14 @@ const TopicAdd = () => {
                   </label>
                   <input
                     type="text"
-                    name="slug"
+                    name="Slug"
                     onChange={formik.handleChange}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
 
-                  {formik.touched.slug && formik.errors.slug && (
-                    <small className="text-red-500">{formik.errors.slug}</small>
+                  {formik.touched.Slug && formik.errors.Slug && (
+                    <small className="text-red-500">{formik.errors.Slug}</small>
                   )}
                 </div>
                 <div>
@@ -242,7 +244,7 @@ const TopicAdd = () => {
                   </label>
                   <input
                     type="file"
-                    name="icon"
+                    name="Image"
                     onChange={(event) => {
                       formik.setFieldValue(
                         'Image',

@@ -5,6 +5,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { getServicedata } from '../API';
 import { deleteStandard, getAllStandard } from '../../API/StandardApi';
+import { format } from 'date-fns';
 
 const StandardListing = () => {
   const [standard, setstandard] = useState([]);
@@ -57,7 +58,7 @@ const StandardListing = () => {
       selector: (row) => <h1 className="text-base">{row.Id}</h1>,
     },
     {
-      name: 'Title',
+      name: 'Standard Name',
       selector: (row) => <h1 className="text-base">{row.Title}</h1>,
     },
 

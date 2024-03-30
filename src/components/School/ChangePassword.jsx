@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { SchoolChangePassword } from '../../API/SchoolAPI';
+import { SchoolChangePassword, getSchoolById } from '../../API/SchoolAPI';
 import { useEffect } from 'react';
 import Breadcrumb from '../Breadcrumb';
 const validateSchema = Yup.object().shape({
