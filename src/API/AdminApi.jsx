@@ -17,8 +17,8 @@ export const AdminLogin = async (data) => {
     const response = await axios.post(`${API_BASE_URL}/adminLogin`, data);
     if (response.data.status === true) {
       const { Id, token } = response.data.responseData;
-      const loginData = { Id, token };
-      sessionStorage.setItem('logindata', JSON.stringify(loginData));
+      const logindata = { Id, token };
+      sessionStorage.setItem('logindata', JSON.stringify(logindata));
       toast('Login Successfully');
       return response;
     } else {

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getSchoolById, updateSchoolById } from '../../API/SchoolAPI';
 
 const validationSchema = Yup.object().shape({
@@ -192,6 +192,10 @@ const SchoolEdit = () => {
       }
     },
   });
+
+  function getFileExtension(filename) {
+    return filename.split('.').pop().toLowerCase();
+  }
 
   const navigate = useNavigate();
 
@@ -623,11 +627,21 @@ const SchoolEdit = () => {
                     <p>Your Exsisting Img File</p>
                     <div className="grid grid-cols-4 gap-2 relative">
                       <div className="relative">
-                        <img
-                          src={formik.values.Photo}
-                          alt=""
-                          className="rounded border p-2 h-28 w-28"
-                        />
+                        {formik.values.Photo ? (
+                          getFileExtension(formik.values.Photo) === 'pdf' ? (
+                            <button className="rounded border p-2">
+                              Download Photo
+                            </button>
+                          ) : (
+                            <img
+                              src={formik.values.Photo}
+                              alt=""
+                              className="rounded border p-2 h-28 w-28"
+                            />
+                          )
+                        ) : (
+                          <p>No photo available</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -657,15 +671,31 @@ const SchoolEdit = () => {
 
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                   <div className="mt-5">
-                    <p>Your Exsisting Img File</p>
-                    <div className="grid grid-cols-4 gap-2 relative">
-                      <div className="relative">
-                        <img
-                          src={formik.values.AddressProof}
-                          alt=""
-                          className="rounded border p-2 h-28 w-28"
-                        />
-                      </div>
+                    <p>Your Exsisting File</p>
+
+                    <div className="relative">
+                      {formik.values.AddressProof ? (
+                        getFileExtension(formik.values.AddressProof) ===
+                        'pdf' ? (
+                          <Link
+                            to={formik.values.AddressProof}
+                            target="_blank"
+                            className="rounded border p-2 "
+                          >
+                            <button type="button" className="mt-2">
+                              Download Address Proof
+                            </button>
+                          </Link>
+                        ) : (
+                          <img
+                            src={formik.values.AddressProof}
+                            alt=""
+                            className="rounded border p-2 h-28 w-28 "
+                          />
+                        )
+                      ) : (
+                        <p>No address proof available</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -693,14 +723,28 @@ const SchoolEdit = () => {
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                   <div className="mt-5">
                     <p>Your Exsisting Img File</p>
-                    <div className="grid grid-cols-4 gap-2 relative">
-                      <div className="relative">
-                        <img
-                          src={formik.values.IdProof}
-                          alt=""
-                          className="rounded border p-2 h-28 w-28"
-                        />
-                      </div>
+                    <div className="relative">
+                      {formik.values.IdProof ? (
+                        getFileExtension(formik.values.IdProof) === 'pdf' ? (
+                          <Link
+                            to={formik.values.IdProof}
+                            target="_blank"
+                            className="rounded border p-2 "
+                          >
+                            <button type="button" className="mt-2">
+                              Download Address Proof
+                            </button>
+                          </Link>
+                        ) : (
+                          <img
+                            src={formik.values.IdProof}
+                            alt=""
+                            className="rounded border p-2 h-28 w-28 "
+                          />
+                        )
+                      ) : (
+                        <p>No address proof available</p>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -11,7 +11,7 @@ const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard Name is required'),
   Title: yup.string().required('Subject Name is required'),
   Slug: yup.string().required('Slug is required'),
-  // icon: yup.string().required('Icon is required'),
+  Image: yup.string().required('Icon is required'),
 });
 const SubjectAdd = () => {
   // ------------Standard DATA-------------------

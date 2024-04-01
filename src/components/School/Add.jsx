@@ -563,7 +563,9 @@ const SchoolAdd = () => {
                       </small>
                     )}
 
-                  <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
+                  <p>
+                    Please select an a jpg, png, gif, jpeg, webp, pdf file only.
+                  </p>
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
@@ -586,7 +588,9 @@ const SchoolAdd = () => {
                       {formik.errors.IdProof}
                     </small>
                   )}
-                  <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
+                  <p>
+                    Please select an a jpg, png, gif, jpeg, webp ,pdf file only.
+                  </p>
                 </div>
 
                 <div>

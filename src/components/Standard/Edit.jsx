@@ -6,9 +6,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getStandardById, updateStandardById } from '../../API/StandardApi';
 
 const validationSchema = yup.object().shape({
-  TItle: yup.string().required('Standard Name is required'),
+  Title: yup.string().required('Standard Name is required'),
   Slug: yup.string().required('Slug is required'),
-  // Image: yup.string().required('Image is required'),
+  Image: yup.string().required('Image is required'),
 });
 
 const StandardEdit = () => {
@@ -49,7 +49,7 @@ const StandardEdit = () => {
       Hid_Image: '',
       Status: '',
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();

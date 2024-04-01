@@ -15,7 +15,7 @@ const validationSchema = yup.object().shape({
   SubjectId: yup.string().required('Subject is required'),
   Title: yup.string().required('Subject Name is required'),
   Slug: yup.string().required('Slug is required'),
-  // Image: yup.string().required('Icon is required'),
+  Image: yup.string().required('Icon is required'),
 });
 
 const ChapterEdit = () => {
