@@ -160,7 +160,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaChevronDown } from 'react-icons/fa6';
 import { Export } from 'react-data-table-component-extensions/dist/ui';
 import { CSVLink } from 'react-csv';
-import { getAllSchool } from '../../API/SchoolAPI';
+import { deleteSchool, getAllSchool } from '../../API/SchoolAPI';
 import { format } from 'date-fns';
 
 const SchoolListing = () => {
