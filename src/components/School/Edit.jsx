@@ -685,12 +685,11 @@ const SchoolEdit = () => {
                       {formik.values.AddressProof ? (
                         getFileExtension(formik.values.AddressProof) ===
                         'pdf' ? (
-                          <Link
-                            to={formik.values.AddressProof}
-                            target="_blank"
-                            className="rounded border p-2 "
-                          >
-                            <button type="button" className="mt-2">
+                          <Link to={formik.values.AddressProof} target="_blank">
+                            <button
+                              type="button"
+                              className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                            >
                               Download Address Proof
                             </button>
                           </Link>
@@ -734,12 +733,11 @@ const SchoolEdit = () => {
                     <div className="relative">
                       {formik.values.IdProof ? (
                         getFileExtension(formik.values.IdProof) === 'pdf' ? (
-                          <Link
-                            to={formik.values.IdProof}
-                            target="_blank"
-                            className="rounded border p-2 "
-                          >
-                            <button type="button" className="mt-2">
+                          <Link to={formik.values.IdProof} target="_blank">
+                            <button
+                              type="button"
+                              className="mt-2 bg-blue-600 p-2 rounded border  text-white"
+                            >
                               Download Address Proof
                             </button>
                           </Link>

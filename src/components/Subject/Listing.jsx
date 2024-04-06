@@ -65,7 +65,10 @@ const SubjectListing = () => {
     {
       name: 'Image',
       selector: (row) => (
-        <img className="p-1 overflow-hidden h-50 w-50 border" src={row.Image} />
+        <img
+          className="p-2 overflow-hidden h-40 rounded-md w-40 border my-2 border-slate-200 bg-white "
+          src={row.Image}
+        />
       ),
     },
     {
