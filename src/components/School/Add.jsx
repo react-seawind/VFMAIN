@@ -120,9 +120,7 @@ const SchoolAdd = () => {
         formData.append('Status', values.Status);
 
         await AddSchool(formData);
-        console.log('====================================');
-        console.log(formData);
-        console.log('====================================');
+
         navigate('/school/listing');
       } catch (error) {
         console.error('Error adding school:', error);
