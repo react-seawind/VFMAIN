@@ -1,5 +1,5 @@
 const Config = {
-  API_BASE_URL: 'https://seawindsolution.ae/VF/api',
+  API_BASE_URL: 'https://vf.seawindsolution.ae/api',
   getToken: () => {
     const sessiondata = sessionStorage.getItem('logindata');
     const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
