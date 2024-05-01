@@ -95,15 +95,6 @@ const ChapterEdit = () => {
       }
     },
   });
-  function getFileExtension(filename) {
-    if (typeof filename !== 'string') {
-      return 'Invalid filename';
-    }
-    if (filename.indexOf('.') === -1) {
-      return 'No file extension found';
-    }
-    return filename.split('.').pop().toLowerCase();
-  }
 
   const navigate = useNavigate();
 
