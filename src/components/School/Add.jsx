@@ -82,42 +82,9 @@ const SchoolAdd = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('SchoolName', values.SchoolName);
-        formData.append('SchoolEmail', values.SchoolEmail);
-        formData.append('SchoolPhone', values.SchoolPhone);
-        formData.append('UserName', values.UserName);
-        formData.append('UserEmail', values.UserEmail);
-        formData.append('UserPhone', values.UserPhone);
-        formData.append('Country', values.Country);
-        formData.append('State', values.State);
-        formData.append('City', values.City);
-        formData.append('Area', values.Area);
-        formData.append('Pincode', values.Pincode);
-        formData.append('Address', values.Address);
-        formData.append('WhatsApp', values.WhatsApp);
-        formData.append('Facebook', values.Facebook);
-        formData.append('Twitter', values.Twitter);
-        formData.append('LinkedIn', values.LinkedIn);
-        formData.append('Instagram', values.Instagram);
-        formData.append('Telegram', values.Telegram);
-        formData.append('Youtube', values.Youtube);
-        if (values.Photo instanceof File) {
-          formData.append('Photo', values.Photo);
-        } else {
-          formData.append('Photo', values.Photo);
-        }
-        if (values.AddressProof instanceof File) {
-          formData.append('AddressProof', values.AddressProof);
-        } else {
-          formData.append('AddressProof', values.AddressProof);
-        }
-        if (values.IdProof instanceof File) {
-          formData.append('IdProof', values.IdProof);
-        } else {
-          formData.append('IdProof', values.IdProof);
-        }
-        formData.append('Password', values.Password);
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await AddSchool(formData);
 

@@ -28,20 +28,9 @@ const PaymentAdd = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Title', values.Title);
-        formData.append('Slug', values.Slug);
-        if (values.Icon instanceof File) {
-          formData.append('Icon', values.Icon);
-        } else {
-          formData.append('Icon', values.Icon);
-        }
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        } else {
-          formData.append('Image', values.Image);
-        }
-        formData.append('Content', values.Content);
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await AddPayment(formData);
         actions.resetForm();

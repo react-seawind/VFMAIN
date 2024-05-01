@@ -28,17 +28,7 @@ const PaymentEdit = () => {
       try {
         if (Id) {
           const PaymentData = await getPaymentById(Id);
-          formik.setValues({
-            Id: PaymentData.Id || '',
-            Title: PaymentData.Title || '',
-            Slug: PaymentData.Slug || '',
-            Content: PaymentData.Content || '',
-            Icon: PaymentData.Icon || '',
-            Hid_Icon: PaymentData.Hid_Icon || '',
-            Image: PaymentData.Image || '',
-            Hid_Image: PaymentData.Hid_Image || '',
-            Status: PaymentData.Status || '0',
-          });
+          formik.setValues(PaymentData);
         } else {
           console.log('error');
         }
@@ -59,11 +49,9 @@ const PaymentEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', Id);
-        formData.append('Title', values.Title);
-        formData.append('Slug', values.Slug);
-
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await updatePaymentById(formData);
       } catch (error) {

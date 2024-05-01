@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -14,29 +14,23 @@ const validationSchema = yup.object().shape({
 const StandardEdit = () => {
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const StandardData = await getStandardById(Id);
-          formik.setValues({
-            Id: StandardData.Id || '',
-            Title: StandardData.Title || '',
-            Slug: StandardData.Slug || '',
-            Image: StandardData.Image || '',
-            Hid_Image: StandardData.Hid_Image || '',
-            Hid_Image2: StandardData.imagePath + StandardData.Hid_Image || '',
-            Status: StandardData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const StandardData = await getStandardById(Id);
+        formik.setValues(StandardData);
+        if (StandardData.Image) {
+          setImagePreview(StandardData.Image); // Update image preview if image exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
 
@@ -53,28 +47,27 @@ const StandardEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', Id);
-        formData.append('Title', values.Title);
-        formData.append('Slug', values.Slug);
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        } else {
-          formData.append('Image', values.Image);
-        }
-        if (values.Hid_Image instanceof File) {
-          formData.append('Hid_Image', values.Hid_Image);
-        } else {
-          formData.append('Hid_Image', values.Hid_Image);
-        }
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await updateStandardById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
       }
     },
   });
 
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -171,7 +164,7 @@ const StandardEdit = () => {
                   <div className="grid grid-cols-4 gap-2 relative">
                     <div className="relative">
                       <img
-                        src={formik.values.Image}
+                        src={imagePreview}
                         className="rounded border p-2 h-28 w-28"
                       />
                     </div>

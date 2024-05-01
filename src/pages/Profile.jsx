@@ -14,23 +14,21 @@ const validationSchema = yup.object().shape({
 const Profile = () => {
   const { adminId } = useParams();
   const [adminData, setAdminData] = useState({});
+  const [imagePreview, setImagePreview] = useState();
   // ================GetData==============
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getAdmindataById(adminId);
-        setAdminData(response.responsedata[0]);
-        formik.setValues({
-          Name: response.responsedata[0].Name || '',
-          Email: response.responsedata[0].Email || '',
-          Image: response.responsedata[0].Image || '',
-          Hid_Image: response.responsedata[0].Hid_Image || '',
-          Id: response.responsedata[0].Id || '',
-        });
-      } catch (error) {
-        console.log('Error fetching admin data');
+  const fetchData = async () => {
+    try {
+      const response = await getAdmindataById(adminId);
+      setAdminData(response.responsedata[0]);
+      formik.setValues(response.responsedata[0]);
+      if (response.responsedata[0].Image) {
+        setImagePreview(response.responsedata[0].Image); // Update image preview if image exists
       }
-    };
+    } catch (error) {
+      console.log('Error fetching admin data');
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [adminId]);
   const formik = useFormik({
@@ -45,15 +43,12 @@ const Profile = () => {
     onSubmit: async (values) => {
       try {
         const formData = new FormData();
-        formData.append('Name', values.Name);
-        formData.append('Email', values.Email);
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        }
-        formData.append('Hid_Image', values.Hid_Image);
-        formData.append('Id', values.Id);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await UpdateAdminById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error updating admin:', error);
       }
@@ -80,11 +75,7 @@ const Profile = () => {
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
-                  <img
-                    src={formik.values.Image}
-                    alt=""
-                    className="w-35 mx-auto"
-                  />
+                  <img src={imagePreview} alt="" className="w-35 mx-auto" />
                 </h3>
               </div>
               <div className="p-7">

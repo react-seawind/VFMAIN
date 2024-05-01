@@ -21,30 +21,23 @@ const validationSchema = yup.object().shape({
 const ChapterEdit = () => {
   // ================ Get data by Id============
   const { Id } = useParams();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (Id) {
-          const ChapterData = await getChapterById(Id);
-          formik.setValues({
-            Id: ChapterData.Id || '',
-            StandardId: ChapterData.StandardId || '',
-            SubjectId: ChapterData.SubjectId || '',
-            Title: ChapterData.Title || '',
-            Slug: ChapterData.Slug || '',
-            Image: ChapterData.Image || '',
-            Hid_Image: ChapterData.Hid_Image || '',
-            Status: ChapterData.Status || '0',
-          });
-        } else {
-          console.log('error');
+  const [imagePreview, setImagePreview] = useState();
+  const fetchData = async () => {
+    try {
+      if (Id) {
+        const ChapterData = await getChapterById(Id);
+        formik.setValues(ChapterData);
+        if (ChapterData.Image) {
+          setImagePreview(ChapterData.Image); // Update image preview if image exists
         }
-      } catch (error) {
-        console.error('Error fetching data:', error);
+      } else {
+        console.log('error');
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [Id]);
 
@@ -91,30 +84,26 @@ const ChapterEdit = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('Id', values.Id);
-        formData.append('StandardId', values.StandardId);
-        formData.append('SubjectId', values.SubjectId);
-        formData.append('Title', values.Title);
-        formData.append('Slug', values.Slug);
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        } else {
-          formData.append('Image', values.Image);
-        }
-        if (values.Hid_Image instanceof File) {
-          formData.append('Hid_Image', values.Hid_Image);
-        } else {
-          formData.append('Hid_Image', values.Hid_Image);
-        }
-
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await updateChapterById(formData);
+        fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
       }
     },
   });
+  function getFileExtension(filename) {
+    if (typeof filename !== 'string') {
+      return 'Invalid filename';
+    }
+    if (filename.indexOf('.') === -1) {
+      return 'No file extension found';
+    }
+    return filename.split('.').pop().toLowerCase();
+  }
 
   const navigate = useNavigate();
 
@@ -266,7 +255,7 @@ const ChapterEdit = () => {
                   <div className="grid grid-cols-4 gap-2 relative">
                     <div className="relative">
                       <img
-                        src={formik.values.Image}
+                        src={imagePreview}
                         alt=""
                         className="rounded border p-2 h-28 w-28"
                       />

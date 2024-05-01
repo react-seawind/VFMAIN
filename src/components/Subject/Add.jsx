@@ -41,15 +41,9 @@ const SubjectAdd = () => {
     onSubmit: async (values, actions) => {
       try {
         const formData = new FormData();
-        formData.append('StandardId', values.StandardId);
-        formData.append('Title', values.Title);
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        } else {
-          formData.append('Image', values.Image);
-        }
-        formData.append('Slug', values.Slug);
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await AddSubject(formData);
         actions.resetForm();
