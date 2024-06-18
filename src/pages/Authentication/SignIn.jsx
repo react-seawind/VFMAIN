@@ -1,12 +1,13 @@
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import LogoDark from '../../images/logo.jpg';
 import Logo from '../../images/logo.jpg';
 import { FaEnvelope, FaKey } from 'react-icons/fa';
-import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 import { AdminLogin } from '../../API/AdminApi';
+import FormLoader from '../../common/Loader/FormLoader';
 const validationSchema = yup.object().shape({
   Email: yup.string().required('Email is required'),
   Password: yup.string().required('Password is required'),
@@ -15,6 +16,7 @@ const SignIn = () => {
   const [loginbutton, setloginbutton] = useState(false);
   const navigate = useNavigate();
 
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Email: '',
@@ -22,26 +24,34 @@ const SignIn = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setloginbutton(true);
-      await AdminLogin(values);
+      setIsFormLoading(true);
+      try {
+        setloginbutton(true);
+        await AdminLogin(values);
 
-      const sessiondata = sessionStorage.getItem('logindata');
-      const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
-      const token = parsedSessionData.token;
+        const sessiondata = sessionStorage.getItem('logindata');
+        const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;
+        const token = parsedSessionData.token;
 
-      if (token) {
-        navigate('/dashboard');
-        window.location.reload();
-      } else {
-        navigate('/login');
-        toast.error('Invalid email or password');
-        setloginbutton(false);
+        if (token) {
+          navigate('/dashboard');
+          window.location.reload();
+        } else {
+          navigate('/login');
+          toast.error('Invalid email or password');
+          setloginbutton(false);
+        }
+      } catch (error) {
+        console.error('Error :', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
 
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="rounded-sm border my-[9%] border-stroke  container mx-auto  bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center ">
           <div className="hidden w-full xl:block xl:w-1/2">

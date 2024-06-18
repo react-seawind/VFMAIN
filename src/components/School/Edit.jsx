@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { getSchoolById, updateSchoolById } from '../../API/SchoolAPI';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = Yup.object().shape({
   SchoolName: Yup.string()
@@ -82,6 +83,7 @@ const SchoolEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -114,6 +116,7 @@ const SchoolEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -123,6 +126,8 @@ const SchoolEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -148,7 +153,7 @@ const SchoolEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="School Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* Input Fields */}
@@ -567,7 +572,7 @@ const SchoolEdit = () => {
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                   <div className="mt-5">
                     <p>Your Exsisting Img File</p>
-                    <div className="grid grid-cols-4 gap-2 relative">
+                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 relative">
                       <div className="relative">
                         {PhotoPreview ? (
                           getFileExtension(PhotoPreview) === 'pdf' ? (
@@ -620,7 +625,7 @@ const SchoolEdit = () => {
                   <div className="mt-5">
                     <p>Your Exsisting File</p>
 
-                    <div className="relative">
+                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 relative">
                       {AddressProofPreview ? (
                         getFileExtension(AddressProofPreview) === 'pdf' ? (
                           <Link to={AddressProofPreview} target="_blank">
@@ -668,7 +673,7 @@ const SchoolEdit = () => {
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                   <div className="mt-5">
                     <p>Your Exsisting Img File</p>
-                    <div className="relative">
+                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 relative">
                       {IdProofPreview ? (
                         getFileExtension(IdProofPreview) === 'pdf' ? (
                           <Link to={IdProofPreview} target="_blank">

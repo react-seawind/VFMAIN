@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { AddPayment } from '../../API/PaymentAPI';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   schoolname: yup
@@ -18,14 +19,16 @@ const validationSchema = yup.object().shape({
 });
 
 const PaymentAdd = () => {
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       schoolname: '',
       amount: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -37,6 +40,8 @@ const PaymentAdd = () => {
         navigate('/payment/listing');
       } catch (error) {
         console.error('Error adding payment:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -49,7 +54,7 @@ const PaymentAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Payment Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

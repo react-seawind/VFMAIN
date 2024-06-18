@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { AddSchool } from '../../API/SchoolAPI';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = Yup.object().shape({
   SchoolName: Yup.string()
@@ -51,6 +52,7 @@ const validationSchema = Yup.object().shape({
   // Password: Yup.string().required('Password is required'),
 });
 const SchoolAdd = () => {
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       SchoolName: '',
@@ -76,21 +78,22 @@ const SchoolAdd = () => {
       AddressProof: '',
       IdProof: '',
       Password: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
           formData.append(key, value);
         });
-
         await AddSchool(formData);
-
         navigate('/school/listing');
       } catch (error) {
         console.error('Error adding school:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -102,7 +105,7 @@ const SchoolAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="School Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

@@ -254,7 +254,16 @@ const TopicEdit = () => {
                     type="text"
                     name="Slug"
                     value={formik.values.Slug}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      let newSlug = e.target.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-');
+                      newSlug = newSlug.replace(/\//g, '-');
+                      newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/\?/g, '-');
+                      formik.setFieldValue('Slug', newSlug);
+                    }}
                     onBlur={formik.handleBlur}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"

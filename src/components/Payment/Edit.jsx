@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -7,6 +7,7 @@ import { BsChevronDown } from 'react-icons/bs';
 import { IoMdClose } from 'react-icons/io';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPaymentById, updatePaymentById } from '../../API/PaymentAPI';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   schoolname: yup
@@ -39,6 +40,7 @@ const PaymentEdit = () => {
 
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       schoolname: '',
@@ -47,6 +49,7 @@ const PaymentEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -56,6 +59,8 @@ const PaymentEdit = () => {
         await updatePaymentById(formData);
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -68,7 +73,7 @@ const PaymentEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Payment Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}

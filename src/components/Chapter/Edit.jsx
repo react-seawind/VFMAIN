@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import { getChapterById, updateChapterById } from '../../API/ChapterApi';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard is required'),
@@ -70,6 +71,7 @@ const ChapterEdit = () => {
     };
     fetchSubject();
   }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       StandardId: '',
@@ -82,6 +84,7 @@ const ChapterEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -92,6 +95,8 @@ const ChapterEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -104,7 +109,7 @@ const ChapterEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Chapter Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -210,7 +215,16 @@ const ChapterEdit = () => {
                     type="text"
                     name="Slug"
                     value={formik.values.Slug}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      let newSlug = e.target.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-');
+                      newSlug = newSlug.replace(/\//g, '-');
+                      newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/\?/g, '-');
+                      formik.setFieldValue('Slug', newSlug);
+                    }}
                     onBlur={formik.handleBlur}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"

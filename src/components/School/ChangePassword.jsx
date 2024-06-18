@@ -2,8 +2,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { SchoolChangePassword, getSchoolById } from '../../API/SchoolAPI';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
+import FormLoader from '../../common/Loader/FormLoader';
 const validateSchema = Yup.object().shape({
   OldPassword: Yup.string().required('Old Password is required.'),
   NewPassword: Yup.string().required('New Password is required.'),
@@ -30,6 +31,7 @@ const ChangePassword = () => {
 
     fetchData();
   }, [Id]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -38,10 +40,13 @@ const ChangePassword = () => {
     },
     validationSchema: validateSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         await SchoolChangePassword(values);
       } catch (error) {
         console.error('Error updating Password:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -55,7 +60,7 @@ const ChangePassword = () => {
     <>
       <div className="mx-auto max-w-270">
         <Breadcrumb pageName="Change Password" />
-
+        {isFormLoading && <FormLoader loading={isFormLoading} />}
         <div className=" ">
           <div className="col-span-5 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">

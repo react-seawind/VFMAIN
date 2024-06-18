@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getStandardById, updateStandardById } from '../../API/StandardApi';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   Title: yup.string().required('Standard Name is required'),
@@ -33,7 +34,7 @@ const StandardEdit = () => {
   useEffect(() => {
     fetchData();
   }, [Id]);
-
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -45,6 +46,7 @@ const StandardEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -55,6 +57,8 @@ const StandardEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -67,7 +71,7 @@ const StandardEdit = () => {
   return (
     <div>
       <Breadcrumb pageName="Standard Edit" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -117,7 +121,16 @@ const StandardEdit = () => {
                     type="text"
                     name="Slug"
                     value={formik.values.Slug}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      let newSlug = e.target.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-');
+                      newSlug = newSlug.replace(/\//g, '-');
+                      newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/\?/g, '-');
+                      formik.setFieldValue('Slug', newSlug);
+                    }}
                     onBlur={formik.handleBlur}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"

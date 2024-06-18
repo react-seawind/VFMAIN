@@ -6,6 +6,7 @@ import { BsChevronDown } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { AddSubject } from '../../API/SubjectAPI';
 import { getAllStandard } from '../../API/StandardApi';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard Name is required'),
@@ -29,16 +30,18 @@ const SubjectAdd = () => {
     fetchStandard();
   }, []);
 
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       StandardId: '',
       Title: '',
       Slug: '',
       Image: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -50,6 +53,8 @@ const SubjectAdd = () => {
         navigate('/subject/listing');
       } catch (error) {
         console.error('Error adding subject:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -62,7 +67,7 @@ const SubjectAdd = () => {
   return (
     <div>
       <Breadcrumb pageName="Subject Add " />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="grid grid-cols-1 gap-9 ">
         <div className="flex flex-col gap-9">
           {/* <!-- Input Fields --> */}
@@ -131,7 +136,16 @@ const SubjectAdd = () => {
                   <input
                     type="text"
                     name="Slug"
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      let newSlug = e.target.value
+                        .toLowerCase()
+                        .trim()
+                        .replace(/\s+/g, '-');
+                      newSlug = newSlug.replace(/\//g, '-');
+                      newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/\?/g, '-');
+                      formik.setFieldValue('Slug', newSlug);
+                    }}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />

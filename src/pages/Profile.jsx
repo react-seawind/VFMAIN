@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { UpdateAdminById, getAdmindataById } from '../API/AdminApi';
+import FormLoader from '../common/Loader/FormLoader';
 const validationSchema = yup.object().shape({
   Name: yup.string().required('Name is required'),
 });
@@ -31,6 +32,7 @@ const Profile = () => {
   useEffect(() => {
     fetchData();
   }, [adminId]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Name: '',
@@ -41,6 +43,7 @@ const Profile = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -51,6 +54,8 @@ const Profile = () => {
         fetchData();
       } catch (error) {
         console.error('Error updating admin:', error);
+      } finally {
+        setIsFormLoading(false); // Set loading state to false when submission ends
       }
     },
   });
@@ -62,7 +67,7 @@ const Profile = () => {
   return (
     <div>
       <Breadcrumb pageName="Profile" />
-
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <div className="">
         <form className="grid grid-cols-5 gap-8" onSubmit={formik.handleSubmit}>
           <input
