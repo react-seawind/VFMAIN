@@ -2,156 +2,130 @@ import React, { useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { BsChevronDown } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
-import { AddPayment } from '../../API/PaymentAPI';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AddPayment } from '../../API/PaymentAPI'; // Assuming AddPayment is implemented correctly
 import FormLoader from '../../common/Loader/FormLoader';
 
+// Validation schema using yup
 const validationSchema = yup.object().shape({
-  schoolname: yup
+  Amount: yup
     .string()
-    .matches(/^[A-Z a-z]+$/, 'Only alphabets are allowed for this field ')
-    .required('School Name is required'),
-  amount: yup
-    .string()
-    .matches(/^[0-9]+$/, 'Only Number are allowed for this field ')
+    .matches(/^[0-9]+$/, 'Only numbers are allowed for this field')
     .required('Amount is required'),
+  PaymentMethod: yup.string().required('Payment Method is required'),
 });
 
 const PaymentAdd = () => {
   const [isFormLoading, setIsFormLoading] = useState(false);
+  const { Id } = useParams(); // Assuming Id is extracted correctly from the URL
+  const navigate = useNavigate();
+
+  // Formik hook for managing form state and validation
   const formik = useFormik({
     initialValues: {
-      schoolname: '',
-      amount: '',
-      Status: '1',
+      SchoolId: Id, // Assuming this will be filled with Id from URL
+      Amount: '',
+      PaymentMethod: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
-      setIsFormLoading(true);
-      try {
-        const formData = new FormData();
-        Object.entries(values).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
+      setIsFormLoading(true); // Start loading state
 
-        await AddPayment(formData);
-        actions.resetForm();
-        navigate('/payment/listing');
+      try {
+        // Call your API function (AddPayment) passing form data
+        const result = await AddPayment(values);
+
+        if (result.status === true) {
+          actions.resetForm(); // Reset form after successful submission
+          navigate(`/school/payment/listing/${Id}`); // Navigate to payment listing page
+        } else {
+          // Handle case where API call returns false or error
+          console.error('Failed to add payment:', result.error);
+        }
       } catch (error) {
         console.error('Error adding payment:', error);
       } finally {
-        setIsFormLoading(false); // Set loading state to false when submission ends
+        setIsFormLoading(false); // Always set loading state to false at the end
       }
     },
   });
 
-  const navigate = useNavigate();
-
   const handleGoBack = () => {
-    navigate('/payment/listing');
+    navigate(`/school/payment/listing/${Id}`); // Navigate back to payment listing page
   };
+
   return (
     <div>
-      <Breadcrumb pageName="Payment Add " />
-      {isFormLoading && <FormLoader loading={isFormLoading} />}
-      <div className="grid grid-cols-1 gap-9 ">
+      <Breadcrumb pageName="Payment Add" />
+      {isFormLoading && <FormLoader loading={isFormLoading} />}{' '}
+      {/* Show loader if form is submitting */}
+      <div className="grid grid-cols-1 gap-9">
         <div className="flex flex-col gap-9">
-          {/* <!-- Input Fields --> */}
+          {/* Form container */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
                 Payment Add
               </h3>
-              <p>
-                Please fill all detail and add new Payment in your Payment
-                directory
-              </p>
+              <p>Please fill all details to add a new payment.</p>
             </div>
 
+            {/* Form submission */}
             <form onSubmit={formik.handleSubmit}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5.5 py-3.5 px-5.5">
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Select School <span className="text-danger">*</span>
-                  </label>
-                  <div className="relative z-20 bg-white dark:bg-form-input">
-                    <select
-                      name="schoolname"
-                      onChange={formik.handleChange}
-                      className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                    >
-                      <option>Select School</option>
-                      <option value="school">School</option>
-                    </select>
-                    <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
-                      <BsChevronDown />
-                    </span>
-                    {formik.touched.schoolname && formik.errors.schoolname && (
-                      <small className="text-red-500">
-                        {formik.errors.schoolname}
-                      </small>
-                    )}
-                  </div>
-                </div>
+              {/* Hidden field for SchoolId */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5.5 py-3.5 px-5.5">
+                {/* Amount input */}
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
                     Amount <span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    name="amount"
+                    name="Amount"
+                    value={formik.values.Amount}
                     onChange={formik.handleChange}
-                    placeholder="Enter Your Amount"
+                    placeholder="Enter Payment Amount"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
-
-                  {formik.touched.amount && formik.errors.schoolname && (
+                  {formik.touched.Amount && formik.errors.Amount && (
                     <small className="text-red-500">
-                      {formik.errors.schoolname}
+                      {formik.errors.Amount}
                     </small>
                   )}
                 </div>
-              </div>
 
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
+                {/* Payment Method input */}
+                <div>
+                  <label className="mb-3 block text-black dark:text-white">
+                    Payment Method <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="PaymentMethod"
+                    value={formik.values.PaymentMethod}
+                    onChange={formik.handleChange}
+                    placeholder="Enter Payment Method"
+                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                  />
+                  {formik.touched.PaymentMethod &&
+                    formik.errors.PaymentMethod && (
+                      <small className="text-red-500">
+                        {formik.errors.PaymentMethod}
+                      </small>
+                    )}
                 </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
-
-              <div className="flex   gap-5.5 py-3.5 px-5.5">
+              {/* Form actions */}
+              <div className="flex gap-5.5 py-3.5 px-5.5">
+                {/* Submit button */}
                 <button
                   className="flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:shadow-1"
                   type="submit"
                 >
                   Submit
                 </button>
+
+                {/* Cancel button */}
                 <button
                   className="flex justify-center rounded border border-stroke py-2 px-6 font-medium text-black hover:shadow-1 dark:border-strokedark dark:text-white"
                   onClick={handleGoBack}

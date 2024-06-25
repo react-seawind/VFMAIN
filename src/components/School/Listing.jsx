@@ -4,12 +4,13 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { deleteSchool, getAllSchool } from '../../API/SchoolAPI';
 import { format } from 'date-fns';
 import ClipLoader from 'react-spinners/BounceLoader';
-import { FaPencilAlt, FaTrash } from 'react-icons/fa';
+import { FaLock, FaPencilAlt, FaRupeeSign, FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import { InputText } from 'primereact/inputtext';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
+import { IoKeyOutline } from 'react-icons/io5';
 
 const SchoolListing = () => {
   const [School, setSchool] = useState([]);
@@ -74,18 +75,18 @@ const SchoolListing = () => {
       <div>
         <Button
           icon={<FaPencilAlt />}
-          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
+          className="border border-blue-600 text-blue-600 mr-2 rounded-full mt-3 py-2.5"
           onClick={() => {
             Navigate(`/school/edit/${rowData.Id}`);
           }}
         />
         <Button
           icon={<FaTrash />}
-          className="border border-red-600 text-red-600 rounded-full py-2.5"
+          className="border border-red-600 text-red-600 mr-2 rounded-full mt-3 py-2.5"
           onClick={() => {
             Swal.fire({
               title: 'Are you sure?',
-              text: `You won't be able to revert this! Are you sure you want to delete ${rowData.Title}?`,
+              text: `You won't be able to revert this! Are you sure you want to delete ${rowData.SchoolName}?`,
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
@@ -96,11 +97,25 @@ const SchoolListing = () => {
                 handleDelete(rowData);
                 Swal.fire(
                   'Deleted!',
-                  `${rowData.Title} has been deleted.`,
+                  `${rowData.SchoolName} has been deleted.`,
                   'success',
                 );
               }
             });
+          }}
+        />
+        <Button
+          icon={<IoKeyOutline />}
+          className="border border-green-600 text-green-600 mr-2 rounded-full mt-3 py-2.5"
+          onClick={() => {
+            Navigate(`/school/changepassword/${rowData.Id}`);
+          }}
+        />
+        <Button
+          icon={<FaRupeeSign />}
+          className="border border-green-600 text-green-600 mr-2 rounded-full mt-3 py-2.5"
+          onClick={() => {
+            Navigate(`/school/payment/listing/${rowData.Id}`);
           }}
         />
       </div>
@@ -198,11 +213,19 @@ const SchoolListing = () => {
                     )}
                   />
                   <Column
+                    field="ExpDt"
+                    header="Expiry Date"
+                    className="border border-stroke"
+                    body={(rowData) =>
+                      format(new Date(rowData.ExpDt), 'MM/dd/yyyy')
+                    }
+                  />
+                  <Column
                     field="EntDt"
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'MM/dd/yyyy')
                     }
                   />
                   <Column

@@ -42,7 +42,11 @@ const ChangePassword = () => {
     onSubmit: async (values, actions) => {
       setIsFormLoading(true);
       try {
-        await SchoolChangePassword(values);
+        const result = await SchoolChangePassword(values);
+        if (result.status === true) {
+          actions.resetForm();
+          navigate('/school/listing');
+        }
       } catch (error) {
         console.error('Error updating Password:', error);
       } finally {

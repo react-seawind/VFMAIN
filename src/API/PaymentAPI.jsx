@@ -15,45 +15,16 @@ const headers = {
 // ==================================Payment======================================
 // =============================================================================
 // =========================Get All Payment=========================
-export const getAllPayment = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/Payment`, {
-      headers,
-    });
-    return response.data.responsedata;
-  } catch (error) {
-    throw error;
-  }
-};
 
 // ----------------------getPaymentbyId----------------
 export const getPaymentById = async (Id) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/Payment/${Id}`, {
+    const response = await axios.get(`${API_BASE_URL}/payment/${Id}`, {
       headers,
     });
 
     if (response.data.status === true) {
-      return response.data.responseData;
-    } else {
-      toast.error(response.data.message);
-      throw new Error(response.data.message); // Throw error with API message
-    }
-  } catch (error) {
-    throw error; // Rethrow the error for further handling
-  }
-};
-// ===================Edit Payment================D
-export const updatePaymentById = async (formData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/Payment`, formData, {
-      headers,
-      'Content-Type': 'multipart/form-data',
-    });
-
-    if (response.data.status === true) {
-      toast(response.data.message); // Toast success message
-      return response.data;
+      return response.data.responsedata;
     } else {
       toast.error(response.data.message);
       throw new Error(response.data.message); // Throw error with API message
@@ -66,11 +37,11 @@ export const updatePaymentById = async (formData) => {
 // ------------------------Add Payment---------------------
 export const AddPayment = async (formData) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/Payment`, formData, {
+    const response = await axios.post(`${API_BASE_URL}/payment`, formData, {
       headers,
     });
     if (response.data.status === true) {
-      toast(response.data.message); // Toast success message
+      toast.success('Payment Add Successfully..'); // Toast success message
       return response.data; // Return response data
     } else {
       toast.error(response.data.message);
@@ -80,20 +51,18 @@ export const AddPayment = async (formData) => {
     throw error; // Rethrow the error for further handling
   }
 };
-// ------------------------delete Payment---------------------
-export const deletePayment = async (Id) => {
+
+// =========================Get All School=========================
+export const getPaymentReportBySchoolId = async (StatusId) => {
   try {
-    const response = await axios.delete(`${API_BASE_URL}/Payment/${Id}`, {
-      headers,
-    });
-    if (response.data.status === true) {
-      toast(response.data.message); // Toast success message
-      return response.data; // Return response data
-    } else {
-      toast.error(response.data.message);
-      throw new Error(response.data.message); // Throw error with API message
-    }
+    const response = await axios.get(
+      `${API_BASE_URL}/payment/report/${StatusId}`,
+      {
+        headers,
+      },
+    );
+    return response.data.responsedata;
   } catch (error) {
-    throw error; // Rethrow the error for further handling
+    throw error;
   }
 };

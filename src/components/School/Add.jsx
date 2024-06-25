@@ -78,7 +78,6 @@ const SchoolAdd = () => {
       AddressProof: '',
       IdProof: '',
       Password: '',
-      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -88,8 +87,10 @@ const SchoolAdd = () => {
         Object.entries(values).forEach(([key, value]) => {
           formData.append(key, value);
         });
-        await AddSchool(formData);
-        navigate('/school/listing');
+        const result = await AddSchool(formData);
+        if (result.status === true) {
+          navigate('/school/listing');
+        }
       } catch (error) {
         console.error('Error adding school:', error);
       } finally {
@@ -580,37 +581,6 @@ const SchoolAdd = () => {
                     </small>
                   )}
                 </div>
-              </div>
-
-              <div className="flex flex-col gap-2.5 py-3.5 px-5.5">
-                <label className="mb-3 block text-black dark:text-white">
-                  Status <span className="text-danger">*</span>
-                </label>
-                <div className="relative">
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="1"
-                      checked={formik.values.Status == '1'}
-                    />
-                    Active
-                  </div>
-                  <div>
-                    <input
-                      type="radio"
-                      onChange={formik.handleChange}
-                      name="Status"
-                      className="mx-2"
-                      value="0"
-                      checked={formik.values.Status == '0'}
-                    />
-                    In Active
-                  </div>
-                </div>
-                <p>Please select an a one status by default is inactive.</p>
               </div>
 
               <div className="flex   gap-5.5 py-3.5 px-5.5">

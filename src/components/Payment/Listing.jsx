@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import Breadcrumb from '../Breadcrumb';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { deletePayment, getAllPayment } from '../../API/PaymentAPI';
+import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
+import { getPaymentById } from '../../API/PaymentAPI';
 import { format } from 'date-fns';
 import ClipLoader from 'react-spinners/BounceLoader';
-import { FaPencilAlt, FaTrash } from 'react-icons/fa';
-import Swal from 'sweetalert2';
 import { InputText } from 'primereact/inputtext';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { Button } from 'primereact/button';
 
 const PaymentListing = () => {
   const [Payment, setPayment] = useState([]);
   const [search, setsearch] = useState('');
   const [filterdata, setfilterdata] = useState([]);
 
+  const { Id } = useParams();
   const Navigate = useNavigate();
   const [loading, setLoading] = useState(true); // Loading state
   // =============action button===============
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getAllPayment();
+        const result = await getPaymentById(Id);
         setPayment(result);
         setfilterdata(result);
       } catch (error) {
@@ -35,65 +33,13 @@ const PaymentListing = () => {
     fetchData();
   }, []);
 
-  // -------------------delete Payment------------------
-  const handleDelete = async (row) => {
-    try {
-      await deletePayment(row.Id);
-      setPayment((prevCategory) =>
-        prevCategory.filter((item) => item.Id !== row.Id),
-      );
-      setfilterdata((prevFilterData) =>
-        prevFilterData.filter((item) => item.Id !== row.Id),
-      );
-    } catch (error) {
-      console.error('Error deleting category:', error);
-    }
-  };
   useEffect(() => {
-    const mySearch = Payment.filter(
+    const mySearch = Payment?.filter(
       (item) =>
-        item.Title && item.Title.toLowerCase().match(search.toLowerCase()),
+        item.Amount && item.Amount.toLowerCase().match(search.toLowerCase()),
     );
     setfilterdata(mySearch);
   }, [search]);
-
-  const actionTemplate = (rowData) => {
-    return (
-      <div>
-        <Button
-          icon={<FaPencilAlt />}
-          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
-          onClick={() => {
-            Navigate(`/payment/edit/${rowData.Id}`);
-          }}
-        />
-        <Button
-          icon={<FaTrash />}
-          className="border border-red-600 text-red-600 rounded-full py-2.5"
-          onClick={() => {
-            Swal.fire({
-              title: 'Are you sure?',
-              text: `You won't be able to revert this! Are you sure you want to delete ${rowData.Title}?`,
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                handleDelete(rowData);
-                Swal.fire(
-                  'Deleted!',
-                  `${rowData.Title} has been deleted.`,
-                  'success',
-                );
-              }
-            });
-          }}
-        />
-      </div>
-    );
-  };
 
   return (
     <div>
@@ -131,7 +77,7 @@ const PaymentListing = () => {
                         />
                       </span>
                       <Link
-                        to="/payment/add"
+                        to={`/school/payment/add/${Id}`}
                         className="bg-blue-500 text-white p-3 px-10 text-sm"
                       >
                         Add
@@ -146,40 +92,57 @@ const PaymentListing = () => {
                     className="border border-stroke"
                   />
                   <Column
-                    field="Title"
-                    header="Title"
+                    field="Amount"
+                    header="Amount"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="PaymentMethod"
+                    header="PaymentMethod"
                     sortable
                     className="border border-stroke"
                   />
 
                   <Column
-                    field="Status"
-                    header="Status"
+                    field="PaymentStatus"
+                    header="PaymentStatus"
                     className="border border-stroke"
                     body={(rowData) => (
                       <span
                         className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
-                          rowData.Status === 1
+                          rowData.PaymentStatus === 'PAID'
                             ? 'bg-green-600 text-white'
                             : 'bg-red-600 text-white'
                         }`}
                       >
-                        {rowData.Status === 1 ? 'Active' : 'Inactive'}
+                        {rowData.PaymentStatus === 'PAID' ? 'Paid' : 'Pending'}
                       </span>
                     )}
                   />
                   <Column
-                    field="EntDt"
-                    header="Entry Date"
+                    field="PaymentDt"
+                    header="Payment Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.PaymentDt), 'MM/dd/yyyy')
                     }
                   />
                   <Column
-                    header="Action"
+                    field="StartDt"
+                    header="Start Date"
                     className="border border-stroke"
-                    body={actionTemplate}
+                    body={(rowData) =>
+                      format(new Date(rowData.StartDt), 'MM/dd/yyyy')
+                    }
+                  />
+                  <Column
+                    field="EndDt"
+                    header="End Date"
+                    className="border border-stroke"
+                    body={(rowData) =>
+                      format(new Date(rowData.EndDt), 'MM/dd/yyyy')
+                    }
                   />
                 </DataTable>
               )}

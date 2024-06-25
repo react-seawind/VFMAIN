@@ -114,3 +114,18 @@ export const SchoolChangePassword = async (data) => {
     throw error;
   }
 };
+
+// =========================Get All School=========================
+export const getReportAllSchool = async (StatusId) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/school/report/${StatusId}`,
+      {
+        headers,
+      },
+    );
+    return response.data.responsedata;
+  } catch (error) {
+    throw error;
+  }
+};

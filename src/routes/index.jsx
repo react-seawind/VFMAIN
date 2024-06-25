@@ -9,9 +9,6 @@ import SchoolAdd from '../components/School/Add';
 import SchoolEdit from '../components/School/Edit';
 import PaymentListing from '../components/Payment/Listing';
 import PaymentAdd from '../components/Payment/Add';
-import PaymentEdit from '../components/Payment/Edit';
-import Paymentreport from '../components/Datamanager/Paymentreport';
-import Schoolreport from '../components/Datamanager/Schoolreport';
 import MyQuillEditor from '../components/QuillEditor';
 import StandardListing from '../components/Standard/Listing';
 import StandardAdd from '../components/Standard/Add';
@@ -26,6 +23,8 @@ import TopicListing from '../components/Topic/Listing';
 import TopicAdd from '../components/Topic/Add';
 import TopicEdit from '../components/Topic/Edit';
 import ChangePassword from '../components/School/ChangePassword';
+import PaymentReport from '../components/Datamanager/Paymentreport';
+import SchoolReport from '../components/Datamanager/Schoolreport';
 
 const coreRoutes = [
   {
@@ -69,25 +68,22 @@ const coreRoutes = [
   // -------------------
   // =================payment=============
   {
-    path: '/payment/listing',
+    path: '/school/payment/listing/:Id',
     component: PaymentListing,
   },
   {
-    path: '/payment/add',
+    path: '/school/payment/add/:Id',
     component: PaymentAdd,
   },
-  {
-    path: '/payment/edit/:Id',
-    component: PaymentEdit,
-  },
+
   // =================REPOET=============
   {
     path: '/schoolreport',
-    component: Schoolreport,
+    component: SchoolReport,
   },
   {
     path: '/paymentreport',
-    component: Paymentreport,
+    component: PaymentReport,
   },
   {
     path: '/new',

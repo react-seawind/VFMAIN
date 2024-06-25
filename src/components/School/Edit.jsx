@@ -214,6 +214,7 @@ const SchoolEdit = () => {
                     value={formik.values.SchoolEmail}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
+                    disabled
                     placeholder="Enter Your School Email"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
@@ -572,7 +573,7 @@ const SchoolEdit = () => {
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                   <div className="mt-5">
                     <p>Your Exsisting Img File</p>
-                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 relative">
+                    <div className="grid gap-2 relative">
                       <div className="relative">
                         {PhotoPreview ? (
                           getFileExtension(PhotoPreview) === 'pdf' ? (
@@ -625,7 +626,7 @@ const SchoolEdit = () => {
                   <div className="mt-5">
                     <p>Your Exsisting File</p>
 
-                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 relative">
+                    <div className="grid gap-2 relative">
                       {AddressProofPreview ? (
                         getFileExtension(AddressProofPreview) === 'pdf' ? (
                           <Link to={AddressProofPreview} target="_blank">
@@ -673,7 +674,7 @@ const SchoolEdit = () => {
                   <p>Please select an a jpg, png, gif, jpeg, webp file only.</p>
                   <div className="mt-5">
                     <p>Your Exsisting Img File</p>
-                    <div className="grid lg:grid-cols-4 grid-cols-2 gap-2 relative">
+                    <div className="grid  gap-2 relative">
                       {IdProofPreview ? (
                         getFileExtension(IdProofPreview) === 'pdf' ? (
                           <Link to={IdProofPreview} target="_blank">

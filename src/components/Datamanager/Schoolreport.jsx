@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 import { FaTrash } from 'react-icons/fa';
-import { deleteSchool, getAllSchool } from '../../API/SchoolAPI';
+import {
+  deleteSchool,
+  getAllSchool,
+  getReportAllSchool,
+} from '../../API/SchoolAPI';
 import Swal from 'sweetalert2';
 import ClipLoader from 'react-spinners/BounceLoader';
 import { InputText } from 'primereact/inputtext';
@@ -12,102 +16,69 @@ import { Button } from 'primereact/button';
 import Breadcrumb from '../Breadcrumb';
 import { CSVLink } from 'react-csv';
 
-const SchoolListing = () => {
+const SchoolReport = () => {
   const [school, setschool] = useState([]);
   const [search, setsearch] = useState('');
   const [filterData, setfilterData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [csvData, setCsvData] = useState([]);
-  const navigate = useNavigate();
+  const [statusFilter, setStatusFilter] = useState('all'); // Default value 'Active'
+
   const dt = useRef(null);
 
   // =============action button===============
+  const fetchData = async () => {
+    try {
+      setLoading(true); // Set loading state for initial loading
+      const result = await getReportAllSchool(statusFilter);
+      setschool(result);
+      setfilterData(result);
+      setCsvData(
+        result.map((item) => ({
+          SchoolName: item.SchoolName,
+          SchoolEmail: item.SchoolEmail,
+          SchoolPhone: item.SchoolPhone,
+          UserName: item.UserName,
+          UserEmail: item.UserEmail,
+          UserPhone: item.UserPhone,
+          Country: item.Country,
+          State: item.State,
+          City: item.City,
+          Area: item.Area,
+          Pincode: item.Pincode,
+          Address: item.Address,
+          WhatsApp: item.WhatsApp,
+          Facebook: item.Facebook,
+          Twitter: item.Twitter,
+          LinkedIn: item.LinkedIn,
+          Instagram: item.Instagram,
+          Telegram: item.Telegram,
+          Youtube: item.Youtube,
+          ExpDt: item.ExpDt,
+          Status: item.Status,
+        })),
+      );
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getAllSchool();
-        setschool(result);
-        setfilterData(result);
-        setCsvData(
-          result.map((item) => ({
-            SchoolName: item.SchoolName,
-            SchoolEmail: item.SchoolEmail,
-            SchoolPhone: item.SchoolPhone,
-            UserName: item.UserName,
-            UserEmail: item.UserEmail,
-            UserPhone: item.UserPhone,
-            Country: item.Country,
-            State: item.State,
-            City: item.City,
-            Area: item.Area,
-            Pincode: item.Pincode,
-            Address: item.Address,
-            WhatsApp: item.WhatsApp,
-            Facebook: item.Facebook,
-            Twitter: item.Twitter,
-            LinkedIn: item.LinkedIn,
-            Instagram: item.Instagram,
-            Telegram: item.Telegram,
-            Youtube: item.Youtube,
-            Status: item.Status,
-          })),
-        );
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, []);
 
-  // -------------------delete school------------------
-  const handleDelete = async (row) => {
-    try {
-      await deleteSchool(row.Id);
-      setschool((prevschool) =>
-        prevschool.filter((item) => item.Id !== row.Id),
-      );
-      setfilterData((prevFilterData) =>
-        prevFilterData.filter((item) => item.Id !== row.Id),
-      );
-    } catch (error) {
-      console.error('Error deleting school:', error);
-    }
+  const handleStatusChange = (e) => {
+    setStatusFilter(e.target.value);
   };
-
-  const actionTemplate = (rowData) => {
-    return (
-      <div>
-        <Button
-          icon={<FaTrash />}
-          className="border border-red-600 text-red-600 rounded-full py-2.5"
-          onClick={() => {
-            Swal.fire({
-              title: 'Are you sure?',
-              text: `You won't be able to revert this! Are you sure you want to delete ${rowData.SchoolName}?`,
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!',
-            }).then((result) => {
-              if (result.isConfirmed) {
-                handleDelete(rowData);
-                Swal.fire(
-                  'Deleted!',
-                  `${rowData.SchoolName} has been deleted.`,
-                  'success',
-                );
-              }
-            });
-          }}
-        />
-      </div>
+  useEffect(() => {
+    const mySearch = school?.filter(
+      (item) =>
+        item.SchoolName &&
+        item.SchoolName.toLowerCase().match(search.toLowerCase()),
     );
-  };
-
+    setfilterData(mySearch);
+  }, [search]);
   return (
     <div>
       <Breadcrumb pageName="School Report" />
@@ -115,6 +86,27 @@ const SchoolListing = () => {
         <div className="flex flex-col gap-9 ">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark card">
+              <div className="bg-[#7fc6e55c] p-3">
+                <form className="">
+                  <select
+                    className="md:w-80 w-40 h-10 border form-control form-select"
+                    value={statusFilter}
+                    onChange={handleStatusChange}
+                  >
+                    <option value="1">Active</option>
+                    <option value="0">In Active</option>
+                    <option value="all">All</option>
+                  </select>
+                  <button
+                    type="button"
+                    className="bg-white h-9.5 px-5 border"
+                    onClick={fetchData}
+                  >
+                    View Report
+                  </button>
+                </form>
+              </div>
+
               {loading ? (
                 <div className="flex justify-center items-center py-60">
                   <ClipLoader color={'#00afee'} loading={loading} size={45} />
@@ -165,6 +157,7 @@ const SchoolListing = () => {
                           { label: 'Instagram', key: 'Instagram' },
                           { label: 'Telegram', key: 'Telegram' },
                           { label: 'Youtube', key: 'Youtube' },
+                          { label: 'ExpDt', key: 'ExpDt' },
                           { label: 'Status', key: 'Status' },
                         ]}
                         filename={'school-data.csv'}
@@ -190,25 +183,46 @@ const SchoolListing = () => {
                   <Column
                     field="SchoolEmail"
                     header="School Email"
+                    sortable
                     className="border border-stroke"
                   />
                   <Column
                     field="SchoolPhone"
                     header="School Phone"
+                    sortable
                     className="border border-stroke"
+                  />
+                  <Column
+                    field="Status"
+                    header="Status"
+                    className="border border-stroke"
+                    body={(rowData) => (
+                      <span
+                        className={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+                          rowData.Status === 1
+                            ? 'bg-green-600 text-white'
+                            : 'bg-red-600 text-white'
+                        }`}
+                      >
+                        {rowData.Status === 1 ? 'Active' : 'Inactive'}
+                      </span>
+                    )}
+                  />
+                  <Column
+                    field="ExpDt"
+                    header="Expiry Date"
+                    className="border border-stroke"
+                    body={(rowData) =>
+                      format(new Date(rowData.ExpDt), 'MM/dd/yyyy')
+                    }
                   />
                   <Column
                     field="EntDt"
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
-                      format(new Date(rowData.EntDt), 'MM/dd/yyyy hh:mm a')
+                      format(new Date(rowData.EntDt), 'MM/dd/yyyy')
                     }
-                  />
-                  <Column
-                    header="Action"
-                    className="border border-stroke"
-                    body={actionTemplate}
                   />
                 </DataTable>
               )}
@@ -220,4 +234,4 @@ const SchoolListing = () => {
   );
 };
 
-export default SchoolListing;
+export default SchoolReport;
