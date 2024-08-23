@@ -7,6 +7,13 @@ import { IoSettingsOutline, IoShareSocial } from 'react-icons/io5';
 import { GrServices } from 'react-icons/gr';
 import { IoIosContact, IoMdAdd } from 'react-icons/io';
 import { TfiLayoutSliderAlt } from 'react-icons/tfi';
+import dashboard from './../images/icon/dashboard.png';
+import school from './../images/icon/school.png';
+import standard from './../images/icon/standard.png';
+import subject from './../images/icon/book-stack.png';
+import chapter from './../images/icon/chapter.png';
+import topic from './../images/icon/trending-topic.png';
+import report from './../images/icon/report.png';
 import { FcAbout } from 'react-icons/fc';
 import {
   FaBook,
@@ -116,7 +123,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                   to="/dashboard"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
                 >
-                  <MdDashboard />
+                  <img className="w-7" src={dashboard} alt="" />
                   Dashboard
                 </NavLink>
               </li>
@@ -136,7 +143,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaSchool />
+                        <img className="w-7" src={school} alt="" />
                         School Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -181,6 +188,67 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                   );
                 }}
               </SidebarLinkGroup>
+
+              {/* ===============School Manager============== */}
+              <SidebarLinkGroup>
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        <img className="w-7" src={school} alt="" />
+                        Offline LMS Master
+                        <div
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                        >
+                          <FaChevronDown />
+                        </div>
+                      </NavLink>
+
+                      <div
+                        className={`translate transform overflow-hidden ${
+                          !open && 'hidden'
+                        }`}
+                      >
+                        <ul className="mt-1 mb-1.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <ul className="mt-2 mb-1.5 flex flex-col gap-2.5 ">
+                              <li>
+                                <NavLink
+                                  to="/lms/listing"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <FaClipboardList />
+                                  Listing
+                                </NavLink>
+                              </li>
+                              <li>
+                                <NavLink
+                                  to="/lms/add"
+                                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 `}
+                                >
+                                  <IoMdAdd />
+                                  Add
+                                </NavLink>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
               {/* ===============Payment Manager============== */}
               <SidebarLinkGroup>
                 {(handleClick, open) => {
@@ -196,7 +264,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBook />
+                        <img className="w-7" src={standard} alt="" />
                         Standard Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -256,7 +324,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBook />
+                        <img className="w-7" src={subject} alt="" />
                         Subject Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -316,7 +384,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBook />
+                        <img className="w-7" src={chapter} alt="" />
                         Chapter Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -376,7 +444,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaBook />
+                        <img className="w-7" src={topic} alt="" />
                         Topic Manager
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
@@ -436,7 +504,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }, SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                        <FaDatabase />
+                        <img className="w-7" src={report} alt="" />
                         Report
                         <div
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${

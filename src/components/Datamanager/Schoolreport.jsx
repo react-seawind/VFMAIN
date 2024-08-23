@@ -89,7 +89,7 @@ const SchoolReport = () => {
               <div className="bg-[#7fc6e55c] p-3">
                 <form className="">
                   <select
-                    className="md:w-80 w-40 h-10 border form-control form-select"
+                    className="md:w-80 w-40 h-10 border form-control form-select bg-white pl-2"
                     value={statusFilter}
                     onChange={handleStatusChange}
                   >
@@ -99,7 +99,7 @@ const SchoolReport = () => {
                   </select>
                   <button
                     type="button"
-                    className="bg-white h-9.5 px-5 border"
+                    className="bg-blue-500 text-white h-[2.5em] px-5 border border-blue-500"
                     onClick={fetchData}
                   >
                     View Report
@@ -169,10 +169,9 @@ const SchoolReport = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
-                    sortable
                     className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
                   />
                   <Column
                     field="SchoolName"
@@ -209,19 +208,19 @@ const SchoolReport = () => {
                     )}
                   />
                   <Column
-                    field="ExpDt"
-                    header="Expiry Date"
-                    className="border border-stroke"
-                    body={(rowData) =>
-                      format(new Date(rowData.ExpDt), 'MM/dd/yyyy')
-                    }
-                  />
-                  <Column
                     field="EntDt"
                     header="Entry Date"
                     className="border border-stroke"
                     body={(rowData) =>
                       format(new Date(rowData.EntDt), 'MM/dd/yyyy')
+                    }
+                  />
+                  <Column
+                    field="ExpDt"
+                    header="Expiry Date"
+                    className="border border-stroke"
+                    body={(rowData) =>
+                      format(new Date(rowData.ExpDt), 'MM/dd/yyyy')
                     }
                   />
                 </DataTable>

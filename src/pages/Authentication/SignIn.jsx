@@ -36,6 +36,7 @@ const SignIn = () => {
         if (token) {
           navigate('/dashboard');
           window.location.reload();
+          setloginbutton(false);
         } else {
           navigate('/login');
           toast.error('Invalid email or password');
@@ -45,6 +46,7 @@ const SignIn = () => {
         console.error('Error :', error);
       } finally {
         setIsFormLoading(false); // Set loading state to false when submission ends
+        setloginbutton(false);
       }
     },
   });

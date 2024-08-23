@@ -25,6 +25,11 @@ import TopicEdit from '../components/Topic/Edit';
 import ChangePassword from '../components/School/ChangePassword';
 import PaymentReport from '../components/Datamanager/Paymentreport';
 import SchoolReport from '../components/Datamanager/Schoolreport';
+import LMSListing from '../components/LMS/Listing';
+import LMSAdd from '../components/LMS/Add';
+import LMSEdit from '../components/LMS/Edit';
+import LMSPaymentListing from '../components/LMS/PaymentListing';
+import LMSPaymentAdd from '../components/LMS/PaymentAdd';
 
 const coreRoutes = [
   {
@@ -141,6 +146,28 @@ const coreRoutes = [
   {
     path: '/topic/edit/:Id',
     component: TopicEdit,
+  },
+
+  // =================lms=============
+  {
+    path: '/lms/listing',
+    component: LMSListing,
+  },
+  {
+    path: '/lms/add',
+    component: LMSAdd,
+  },
+  {
+    path: '/lms/edit/:Id',
+    component: LMSEdit,
+  },
+  {
+    path: '/lms/payment/listing/:Id',
+    component: LMSPaymentListing,
+  },
+  {
+    path: '/lms/payment/add/:Id',
+    component: LMSPaymentAdd,
   },
 ];
 

@@ -10,6 +10,7 @@ import { getAllStandard } from '../../API/StandardApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import { getChapterById, updateChapterById } from '../../API/ChapterApi';
 import FormLoader from '../../common/Loader/FormLoader';
+import { getSubjectByStandardId } from '../../API/CommonApi';
 
 const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard is required'),
@@ -20,16 +21,19 @@ const validationSchema = yup.object().shape({
 });
 
 const ChapterEdit = () => {
-  // ================ Get data by Id============
   const { Id } = useParams();
   const [imagePreview, setImagePreview] = useState();
+  const [std, setStd] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
+
   const fetchData = async () => {
     try {
       if (Id) {
         const ChapterData = await getChapterById(Id);
         formik.setValues(ChapterData);
         if (ChapterData.Image) {
-          setImagePreview(ChapterData.Image); // Update image preview if image exists
+          setImagePreview(ChapterData.Image);
         }
       } else {
         console.log('error');
@@ -38,18 +42,16 @@ const ChapterEdit = () => {
       console.error('Error fetching data:', error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, [Id]);
-
-  // ------------Standard DATA-------------------
-  const [std, setstd] = useState([]);
 
   useEffect(() => {
     const fetchStandard = async () => {
       try {
         const StandardData = await getAllStandard();
-        setstd(StandardData);
+        setStd(StandardData);
       } catch (error) {
         console.error('Error fetching Standard:', error);
       }
@@ -57,21 +59,6 @@ const ChapterEdit = () => {
     fetchStandard();
   }, []);
 
-  // ------------subject DATA-------------------
-  const [subject, setsubject] = useState([]);
-
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setsubject(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
-    fetchSubject();
-  }, []);
-  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       StandardId: '',
@@ -96,10 +83,26 @@ const ChapterEdit = () => {
       } catch (error) {
         console.error('Error updating slider:', error);
       } finally {
-        setIsFormLoading(false); // Set loading state to false when submission ends
+        setIsFormLoading(false);
       }
     },
   });
+
+  useEffect(() => {
+    if (formik.values.StandardId) {
+      const fetchSubjectByStandardId = async () => {
+        try {
+          const SubjectData = await getSubjectByStandardId(
+            formik.values.StandardId,
+          );
+          setSubject(SubjectData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      };
+      fetchSubjectByStandardId();
+    }
+  }, [formik.values.StandardId]);
 
   const navigate = useNavigate();
 
@@ -169,14 +172,21 @@ const ChapterEdit = () => {
                       value={formik.values.SubjectId}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
+                      className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-1.5 px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
-                      {subject.map((subject) => (
-                        <option key={subject.Id} value={subject.Id}>
-                          {subject.Title}
+                      {subject.length === 0 ? (
+                        <option disabled>
+                          No subjects available for this standard
                         </option>
-                      ))}
+                      ) : (
+                        subject.map((subject) => (
+                          <option key={subject.Id} value={subject.Id}>
+                            {subject.Title}
+                          </option>
+                        ))
+                      )}
                     </select>
+
                     <span className="absolute top-1/2 right-4 z-10 -translate-y-1/2">
                       <BsChevronDown />
                     </span>

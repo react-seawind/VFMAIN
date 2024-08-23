@@ -10,6 +10,11 @@ import { getTopicById, updateTopicById } from '../../API/TopicAPI';
 import { getAllChapter } from '../../API/ChapterApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import { getAllStandard } from '../../API/StandardApi';
+import {
+  getChapterBySubjectIdId,
+  getSubjectByStandardId,
+} from '../../API/CommonApi';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard is required'),
@@ -60,32 +65,9 @@ const TopicEdit = () => {
   // ------------subject DATA-------------------
   const [subject, setsubject] = useState([]);
 
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setsubject(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
-    fetchSubject();
-  }, []);
-
   // ------------chapter DATA-------------------
   const [chapter, setchapter] = useState([]);
-
-  useEffect(() => {
-    const fetchChapter = async () => {
-      try {
-        const ChapterData = await getAllChapter();
-        setchapter(ChapterData);
-      } catch (error) {
-        console.error('Error fetching Chapter:', error);
-      }
-    };
-    fetchChapter();
-  }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       Id: Id,
@@ -100,6 +82,7 @@ const TopicEdit = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
@@ -110,6 +93,8 @@ const TopicEdit = () => {
         fetchData();
       } catch (error) {
         console.error('Error updating slider:', error);
+      } finally {
+        setIsFormLoading(false);
       }
     },
   });
@@ -119,8 +104,41 @@ const TopicEdit = () => {
   const handleGoBack = () => {
     navigate('/topic/listing');
   };
+
+  useEffect(() => {
+    if (formik.values.StandardId) {
+      const fetchSubject = async () => {
+        try {
+          const SubjectData = await getSubjectByStandardId(
+            formik.values.StandardId,
+          );
+          setsubject(SubjectData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      };
+      fetchSubject();
+    }
+  }, [formik.values.StandardId]);
+  useEffect(() => {
+    if (formik.values.StandardId && formik.values.SubjectId) {
+      const fetchStandard = async () => {
+        try {
+          const ChapterData = await getChapterBySubjectIdId(
+            formik.values.StandardId,
+            formik.values.SubjectId,
+          );
+          setchapter(ChapterData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      };
+      fetchStandard();
+    }
+  }, [formik.values.StandardId, formik.values.SubjectId]);
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Topic Edit" />
 
       <div className="grid grid-cols-1 gap-9 ">
@@ -154,6 +172,11 @@ const TopicEdit = () => {
                       onChange={formik.handleChange}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
+                      {std.length === 0 && (
+                        <option disabled value="">
+                          No Standard Available
+                        </option>
+                      )}
                       {std.map((std) => (
                         <option key={std.Id} value={std.Id}>
                           {std.Title}
@@ -182,6 +205,11 @@ const TopicEdit = () => {
                       onBlur={formik.handleBlur}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
+                      {subject.length === 0 && (
+                        <option disabled value="">
+                          No Standard Available
+                        </option>
+                      )}
                       {subject.map((subject) => (
                         <option key={subject.Id} value={subject.Id}>
                           {subject.Title}
@@ -210,6 +238,11 @@ const TopicEdit = () => {
                       onBlur={formik.handleBlur}
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
+                      {chapter.length === 0 && (
+                        <option disabled value="">
+                          No Chapter Available
+                        </option>
+                      )}
                       {chapter.map((chapter) => (
                         <option key={chapter.Id} value={chapter.Id}>
                           {chapter.Title}
@@ -253,7 +286,6 @@ const TopicEdit = () => {
                   <input
                     type="text"
                     name="Slug"
-                    value={formik.values.Slug}
                     onChange={(e) => {
                       let newSlug = e.target.value
                         .toLowerCase()
@@ -261,9 +293,11 @@ const TopicEdit = () => {
                         .replace(/\s+/g, '-');
                       newSlug = newSlug.replace(/\//g, '-');
                       newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/&/g, '');
                       newSlug = newSlug.replace(/\?/g, '-');
                       formik.setFieldValue('Slug', newSlug);
                     }}
+                    value={formik.values.Slug}
                     onBlur={formik.handleBlur}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"

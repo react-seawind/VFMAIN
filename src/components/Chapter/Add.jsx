@@ -8,6 +8,7 @@ import { AddChapter, getAllChapter } from '../../API/ChapterApi';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllSubject } from '../../API/SubjectAPI';
 import FormLoader from '../../common/Loader/FormLoader';
+import { getSubjectByStandardId } from '../../API/CommonApi';
 
 const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard is required'),
@@ -18,14 +19,14 @@ const validationSchema = yup.object().shape({
 });
 
 const ChapterAdd = () => {
-  // ------------Standard DATA-------------------
-  const [std, setstd] = useState([]);
-
+  const [std, setStd] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const [isFormLoading, setIsFormLoading] = useState(false);
   useEffect(() => {
     const fetchStandard = async () => {
       try {
         const StandardData = await getAllStandard();
-        setstd(StandardData);
+        setStd(StandardData);
       } catch (error) {
         console.error('Error fetching Standard:', error);
       }
@@ -33,22 +34,6 @@ const ChapterAdd = () => {
     fetchStandard();
   }, []);
 
-  // ------------subject DATA-------------------
-  const [subject, setsubject] = useState([]);
-
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setsubject(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
-    fetchSubject();
-  }, []);
-
-  const [isFormLoading, setIsFormLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       StandardId: '',
@@ -72,10 +57,26 @@ const ChapterAdd = () => {
       } catch (error) {
         console.error('Error adding chapter:', error);
       } finally {
-        setIsFormLoading(false); // Set loading state to false when submission ends
+        setIsFormLoading(false);
       }
     },
   });
+
+  useEffect(() => {
+    if (formik.values.StandardId) {
+      const fetchSubject = async () => {
+        try {
+          const SubjectData = await getSubjectByStandardId(
+            formik.values.StandardId,
+          );
+          setSubject(SubjectData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      };
+      fetchSubject();
+    }
+  }, [formik.values.StandardId]);
 
   const navigate = useNavigate();
 
@@ -188,9 +189,11 @@ const ChapterAdd = () => {
                         .replace(/\s+/g, '-');
                       newSlug = newSlug.replace(/\//g, '-');
                       newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/&/g, '');
                       newSlug = newSlug.replace(/\?/g, '-');
                       formik.setFieldValue('Slug', newSlug);
                     }}
+                    value={formik.values.Slug}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />

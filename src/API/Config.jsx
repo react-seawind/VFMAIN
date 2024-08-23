@@ -1,5 +1,5 @@
 const Config = {
-  API_BASE_URL: 'https://vf.seawindsolution.ae/api',
+  API_BASE_URL: 'https://masterapi.virtualfilaments.com/api',
   getToken: () => {
     const sessiondata = sessionStorage.getItem('logindata');
     const parsedSessionData = sessiondata ? JSON.parse(sessiondata) : null;

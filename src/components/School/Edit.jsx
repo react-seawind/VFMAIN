@@ -40,12 +40,12 @@ const validationSchema = Yup.object().shape({
     .min(10, 'WhatsApp Number must be at least 10 characters')
     .max(10, 'WhatsApp Number must be at most 10 characters')
     .required('WhatsApp Number is required'),
-  Facebook: Yup.string().required('Facebook is required'),
-  Twitter: Yup.string().required('Twitter is required'),
-  LinkedIn: Yup.string().required('LinkedIn is required'),
-  Instagram: Yup.string().required('Instagram is required'),
-  Youtube: Yup.string().required('Youtube is required'),
-  Telegram: Yup.string().required('Telegram is required'),
+  // Facebook: Yup.string().required('Facebook is required'),
+  // Twitter: Yup.string().required('Twitter is required'),
+  // LinkedIn: Yup.string().required('LinkedIn is required'),
+  // Instagram: Yup.string().required('Instagram is required'),
+  // Youtube: Yup.string().required('Youtube is required'),
+  // Telegram: Yup.string().required('Telegram is required'),
   Photo: Yup.string().required('Photo is required'),
   AddressProof: Yup.string().required('AddressProof is required'),
   IdProof: Yup.string().required('Id Proof is required'),
@@ -435,7 +435,7 @@ const SchoolEdit = () => {
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Facebook <span className="text-danger">*</span>
+                    Facebook
                   </label>
                   <input
                     type="text"
@@ -454,7 +454,7 @@ const SchoolEdit = () => {
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Twitter <span className="text-danger">*</span>
+                    Twitter
                   </label>
                   <input
                     type="text"
@@ -474,7 +474,7 @@ const SchoolEdit = () => {
 
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    LinkedIn <span className="text-danger">*</span>
+                    LinkedIn
                   </label>
                   <input
                     type="text"
@@ -493,7 +493,7 @@ const SchoolEdit = () => {
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Instagram <span className="text-danger">*</span>
+                    Instagram
                   </label>
                   <input
                     type="text"
@@ -512,7 +512,7 @@ const SchoolEdit = () => {
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Telegram <span className="text-danger">*</span>
+                    Telegram
                   </label>
                   <input
                     type="text"
@@ -531,7 +531,7 @@ const SchoolEdit = () => {
                 </div>
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    Youtube <span className="text-danger">*</span>
+                    Youtube
                   </label>
                   <input
                     type="text"

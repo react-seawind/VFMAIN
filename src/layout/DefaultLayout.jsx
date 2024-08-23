@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+const currentYear = new Date().getFullYear();
 
 const DefaultLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,8 +19,26 @@ const DefaultLayout = () => {
             </div>
           </main>
 
-          <div className="py-6 bg-white w-full text-center mx-auto mt-auto dark:border-strokedark dark:bg-boxdark">
-            <p>Admin @ Virtual filament</p>
+          <div className="py-6 bg-white dark:bg-boxdark w-full text-center mx-auto loader-first1 mt-auto">
+            © {currentYear} Virtual Filaments Design and Develop By {'  '}
+            <Link
+              target="_blank"
+              to={'https://www.seawindsolution.com/'}
+              className="text-[#29aae1] ml-1"
+            >
+              Seawind Solution Pvt. Ltd.{' '}
+            </Link>
+            <Link
+              target="_blank"
+              to={'https://www.seawindsolution.ae/'}
+              className="text-[#29aae1] ml-1"
+            >
+              <img
+                src="https://www.seawindsolution.ae/assets/front/images/loaderimage.png"
+                alt=""
+                className="animate-spin"
+              />
+            </Link>
           </div>
         </div>
       </div>

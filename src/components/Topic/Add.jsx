@@ -8,6 +8,11 @@ import { AddTopic } from '../../API/TopicAPI';
 import { getAllChapter } from '../../API/ChapterApi';
 import { getAllStandard } from '../../API/StandardApi';
 import { getAllSubject } from '../../API/SubjectAPI';
+import {
+  getChapterBySubjectIdId,
+  getSubjectByStandardId,
+} from '../../API/CommonApi';
+import FormLoader from '../../common/Loader/FormLoader';
 
 const validationSchema = yup.object().shape({
   StandardId: yup.string().required('Standard is required'),
@@ -21,6 +26,8 @@ const validationSchema = yup.object().shape({
 const TopicAdd = () => {
   // ------------Standard DATA-------------------
   const [std, setstd] = useState([]);
+  const [subject, setsubject] = useState([]);
+  const [chapter, setchapter] = useState([]);
 
   useEffect(() => {
     const fetchStandard = async () => {
@@ -33,36 +40,7 @@ const TopicAdd = () => {
     };
     fetchStandard();
   }, []);
-
-  // ------------subject DATA-------------------
-  const [subject, setsubject] = useState([]);
-
-  useEffect(() => {
-    const fetchSubject = async () => {
-      try {
-        const SubjectData = await getAllSubject();
-        setsubject(SubjectData);
-      } catch (error) {
-        console.error('Error fetching Subject:', error);
-      }
-    };
-    fetchSubject();
-  }, []);
-
-  // ------------chapter DATA-------------------
-  const [chapter, setchapter] = useState([]);
-
-  useEffect(() => {
-    const fetchChapter = async () => {
-      try {
-        const ChapterData = await getAllChapter();
-        setchapter(ChapterData);
-      } catch (error) {
-        console.error('Error fetching Chapter:', error);
-      }
-    };
-    fetchChapter();
-  }, []);
+  const [isFormLoading, setIsFormLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -72,32 +50,59 @@ const TopicAdd = () => {
       Title: '',
       Slug: '',
       Image: '',
-      Status: '',
+      Status: '1',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
+      setIsFormLoading(true);
       try {
         const formData = new FormData();
-        formData.append('StandardId', values.StandardId);
-        formData.append('SubjectId', values.SubjectId);
-        formData.append('ChapterId', values.ChapterId);
-        formData.append('Title', values.Title);
-        if (values.Image instanceof File) {
-          formData.append('Image', values.Image);
-        } else {
-          formData.append('Image', values.Image);
-        }
-        formData.append('Slug', values.Slug);
-        formData.append('Status', values.Status);
+        Object.entries(values).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
 
         await AddTopic(formData);
         actions.resetForm();
         navigate('/topic/listing');
       } catch (error) {
         console.error('Error adding topic:', error);
+      } finally {
+        setIsFormLoading(false);
       }
     },
   });
+
+  useEffect(() => {
+    if (formik.values.StandardId) {
+      const fetchSubject = async () => {
+        try {
+          const SubjectData = await getSubjectByStandardId(
+            formik.values.StandardId,
+          );
+          setsubject(SubjectData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      };
+      fetchSubject();
+    }
+  }, [formik.values.StandardId]);
+  useEffect(() => {
+    if (formik.values.StandardId && formik.values.SubjectId) {
+      const fetchStandard = async () => {
+        try {
+          const ChapterData = await getChapterBySubjectIdId(
+            formik.values.StandardId,
+            formik.values.SubjectId,
+          );
+          setchapter(ChapterData);
+        } catch (error) {
+          console.error('Error fetching Subject:', error);
+        }
+      };
+      fetchStandard();
+    }
+  }, [formik.values.StandardId, formik.values.SubjectId]);
 
   const navigate = useNavigate();
 
@@ -106,6 +111,7 @@ const TopicAdd = () => {
   };
   return (
     <div>
+      {isFormLoading && <FormLoader loading={isFormLoading} />}
       <Breadcrumb pageName="Topic Add " />
 
       <div className="grid grid-cols-1 gap-9 ">
@@ -134,6 +140,11 @@ const TopicAdd = () => {
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
                       <option>Select Standard</option>
+                      {std.length === 0 && (
+                        <option disabled value="">
+                          No Standard Available
+                        </option>
+                      )}
                       {std.map((std) => (
                         <option key={std.Id} value={std.Id}>
                           {std.Title}
@@ -161,6 +172,11 @@ const TopicAdd = () => {
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
                       <option>Select Subject</option>
+                      {subject.length === 0 && (
+                        <option disabled value="">
+                          No Standard Available
+                        </option>
+                      )}
                       {subject.map((subject) => (
                         <option key={subject.Id} value={subject.Id}>
                           {subject.Title}
@@ -188,6 +204,11 @@ const TopicAdd = () => {
                       className="relative z-20   w-full appearance-none rounded border border-stroke bg-transparent py-1.5   px-5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                     >
                       <option>Select Chapter</option>
+                      {chapter.length === 0 && (
+                        <option disabled value="">
+                          No Chapter Available
+                        </option>
+                      )}
                       {chapter.map((chapter) => (
                         <option key={chapter.Id} value={chapter.Id}>
                           {chapter.Title}
@@ -236,9 +257,11 @@ const TopicAdd = () => {
                         .replace(/\s+/g, '-');
                       newSlug = newSlug.replace(/\//g, '-');
                       newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/&/g, '');
                       newSlug = newSlug.replace(/\?/g, '-');
                       formik.setFieldValue('Slug', newSlug);
                     }}
+                    value={formik.values.Slug}
                     placeholder="Enter Slug"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-1.5 px-3 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />

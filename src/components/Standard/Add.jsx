@@ -100,6 +100,7 @@ const StandardAdd = () => {
                         .replace(/\s+/g, '-');
                       newSlug = newSlug.replace(/\//g, '-');
                       newSlug = newSlug.replace(/%/g, '');
+                      newSlug = newSlug.replace(/&/g, '');
                       newSlug = newSlug.replace(/\?/g, '-');
                       formik.setFieldValue('Slug', newSlug);
                     }}

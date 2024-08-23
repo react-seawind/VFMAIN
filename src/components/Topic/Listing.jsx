@@ -73,14 +73,14 @@ const TopicListing = () => {
       <div>
         <Button
           icon={<FaPencilAlt />}
-          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5"
+          className="border border-blue-600 text-blue-600 mr-2 rounded-full py-2.5 mt-1"
           onClick={() => {
             Navigate(`/topic/edit/${rowData.Id}`);
           }}
         />
         <Button
           icon={<FaTrash />}
-          className="border border-red-600 text-red-600 rounded-full py-2.5"
+          className="border border-red-600 text-red-600 rounded-full py-2.5 mt-1"
           onClick={() => {
             Swal.fire({
               title: 'Are you sure?',
@@ -151,24 +151,36 @@ const TopicListing = () => {
                   }
                 >
                   <Column
-                    field="Id"
                     header="#"
+                    className="border border-stroke"
+                    body={(rowData, { rowIndex }) => rowIndex + 1}
+                  />
+
+                  <Column
+                    field="StandardName"
+                    header="Standard"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="SubjectName"
+                    header="Subject"
+                    sortable
+                    className="border border-stroke"
+                  />
+                  <Column
+                    field="ChapterName"
+                    header="Chapter"
                     sortable
                     className="border border-stroke"
                   />
                   <Column
                     field="Title"
-                    header="Title"
+                    header="Topic"
                     sortable
                     className="border border-stroke"
                   />
 
-                  <Column
-                    field="image"
-                    header="Image"
-                    className="border border-stroke"
-                    body={imageBodyTemplate}
-                  ></Column>
                   <Column
                     field="Status"
                     header="Status"
